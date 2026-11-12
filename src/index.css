@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Lora', Georgia, Cambria, serif;
+  --font-serif-display: 'Cormorant Garamond', 'Lora', Georgia, serif;
+  --font-devanagari: 'Noto Sans Devanagari', sans-serif;
+
+  --color-brand-primary: #521810;
+  --color-brand-crimson: #7A2217;
+  --color-brand-dark: #370C01;
+  --color-brand-deep: #240700;
+  --color-brand-light: #6A2218;
+
+  --color-brand-gold: #CB9010;
+  --color-brand-gold-hover: #B8800B;
+  --color-brand-gold-light: #F7C568;
+  --color-brand-gold-bright: #EBBA5A;
+
+  --color-brand-cream: #F8F4F2;
+  --color-brand-muted: #C7B5A7;
+  --color-surface-dark: #1A0502;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 42s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
