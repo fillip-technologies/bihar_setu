@@ -1,93 +1,55 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
+import DynamicFormFields, { FormLoadError, FormSkeleton } from '../../shared/DynamicFormFields';
+import { submitForm } from '../../utils/api';
+import { initialValues, useFormDefinition } from '../../utils/formSchema';
+
+const FORM_KEY = 'enquire';
 
 export default function EnquireForm() {
-  const { t } = useTranslation();
-  const [formData, setFormData] = useState({
-    fullName: '',
-    organisation: '',
-    email: '',
-    mobile: '',
-    district: '',
-    category: 'General enquiry',
-    message: '',
-    agreed: false,
-  });
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language || 'en';
+  const { fields, status, error: loadError, reload } = useFormDefinition(FORM_KEY);
 
-  const [submitted, setSubmitted] = useState(false);
+  // Only the fields the visitor changed; everything else comes from the field defaults.
+  const [edits, setEdits] = useState({});
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [formError, setFormError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState(null);
 
-  const biharDistricts = [
-    'Araria',
-    'Arwal',
-    'Aurangabad',
-    'Banka',
-    'Begusarai',
-    'Bhagalpur',
-    'Bhojpur',
-    'Buxar',
-    'Darbhanga',
-    'East Champaran',
-    'Gaya',
-    'Gopalganj',
-    'Jamui',
-    'Jehanabad',
-    'Kaimur',
-    'Katihar',
-    'Khagaria',
-    'Kishanganj',
-    'Lakhisarai',
-    'Madhepura',
-    'Madhubani',
-    'Munger',
-    'Muzaffarpur',
-    'Nalanda',
-    'Nawada',
-    'Patna',
-    'Purnia',
-    'Rohtas',
-    'Saharsa',
-    'Samastipur',
-    'Saran',
-    'Sheikhpura',
-    'Sheohar',
-    'Sitamarhi',
-    'Siwan',
-    'Supaul',
-    'Vaishali',
-    'West Champaran',
-  ];
+  const values = { ...initialValues(fields), ...edits };
 
-  const categories = [
-    'General enquiry',
-    'Speaker enquiry',
-    'Sponsor enquiry',
-    'Media enquiry',
-    'Association enquiry',
-    'Institutional partnership',
-    'Corporate partnership',
-    'Knowledge partnership',
-    'Technology partnership',
-    'Submit an initiative',
-    'Other',
-  ];
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+  const handleChange = (key, value) => {
+    setEdits((prev) => ({ ...prev, [key]: value }));
+    setFieldErrors((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.agreed) {
-      alert('Please agree to be contacted by Bihar Setu.');
-      return;
+    setSubmitting(true);
+    setFormError('');
+    try {
+      setResult(await submitForm(FORM_KEY, values));
+      setFieldErrors({});
+    } catch (err) {
+      setFieldErrors(err.fieldErrors || {});
+      setFormError(err.message);
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitted(true);
   };
+
+  const resetForm = () => {
+    setEdits({});
+    setFieldErrors({});
+    setFormError('');
+    setResult(null);
+  };
+
+  const emailField = fields.find((f) => f.type === 'email');
+  const replyTo = (emailField && result?.data[emailField.key]) || 'your email';
 
   return (
     <section className="bg-white py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 w-full">
@@ -97,209 +59,57 @@ export default function EnquireForm() {
           {t('enquirePage.formHeading')}
         </h2>
 
-        {submitted ? (
+        {result ? (
           <div className="bg-[#FAF5EB] border border-[#E8DEC8] rounded-xl p-8 text-center space-y-3">
             <CheckCircle2 size={40} className="mx-auto text-[#96681E]" />
             <h3 className="text-lg font-semibold text-[#1F0E0A]">
               {t('enquirePage.successMsg')}
             </h3>
             <p className="text-xs sm:text-sm text-[#6B5A52]">
-              Our team will review your enquiry and get back to you shortly at {formData.email || 'your email'}.
+              Our team will review your enquiry and get back to you shortly at {replyTo}.
+            </p>
+            <p className="text-xs text-[#8A7972]">
+              Reference: <span className="font-mono font-bold text-[#651B12]">{result.referenceId}</span>
             </p>
             <button
               type="button"
-              onClick={() => {
-                setSubmitted(false);
-                setFormData({
-                  fullName: '',
-                  organisation: '',
-                  email: '',
-                  mobile: '',
-                  district: '',
-                  category: 'General enquiry',
-                  message: '',
-                  agreed: false,
-                });
-              }}
-              className="mt-4 px-6 py-2 bg-[#D6A33A] text-[#1E0904] font-bold text-xs uppercase rounded-full"
+              onClick={resetForm}
+              className="mt-4 px-6 py-2 bg-[#D6A33A] text-[#1E0904] font-bold text-xs uppercase rounded-full cursor-pointer"
             >
               Submit Another Enquiry
             </button>
           </div>
+        ) : status === 'loading' ? (
+          <FormSkeleton />
+        ) : status === 'error' ? (
+          <FormLoadError message={loadError} onRetry={reload} />
         ) : (
+          /* Enquiry Form - fields are managed from the admin panel */
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Full Name */}
-              <div>
-                <label
-                  htmlFor="fullName"
-                  className="block text-xs sm:text-sm text-[#4A3831] font-medium mb-1.5"
-                >
-                  {t('enquirePage.fullName')}
-                </label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  required
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  placeholder={t('enquirePage.fullNamePlaceholder')}
-                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#E5DCCD] rounded-md bg-white text-[#1F0E0A] placeholder-[#9E8E87] focus:border-[#D6A33A] focus:outline-hidden transition-colors"
-                />
-              </div>
+            <DynamicFormFields
+              formKey={FORM_KEY}
+              fields={fields}
+              values={values}
+              errors={fieldErrors}
+              onChange={handleChange}
+              lang={lang}
+              variant="enquire"
+            />
 
-              {/* Organisation */}
-              <div>
-                <label
-                  htmlFor="organisation"
-                  className="block text-xs sm:text-sm text-[#4A3831] font-medium mb-1.5"
-                >
-                  {t('enquirePage.organisation')}
-                </label>
-                <input
-                  type="text"
-                  id="organisation"
-                  name="organisation"
-                  value={formData.organisation}
-                  onChange={handleChange}
-                  placeholder={t('enquirePage.organisationPlaceholder')}
-                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#E5DCCD] rounded-md bg-white text-[#1F0E0A] placeholder-[#9E8E87] focus:border-[#D6A33A] focus:outline-hidden transition-colors"
-                />
-              </div>
-
-              {/* Email Address */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-xs sm:text-sm text-[#4A3831] font-medium mb-1.5"
-                >
-                  {t('enquirePage.email')}
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder={t('enquirePage.emailPlaceholder')}
-                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#E5DCCD] rounded-md bg-white text-[#1F0E0A] placeholder-[#9E8E87] focus:border-[#D6A33A] focus:outline-hidden transition-colors"
-                />
-              </div>
-
-              {/* Mobile Number */}
-              <div>
-                <label
-                  htmlFor="mobile"
-                  className="block text-xs sm:text-sm text-[#4A3831] font-medium mb-1.5"
-                >
-                  {t('enquirePage.mobile')}
-                </label>
-                <input
-                  type="tel"
-                  id="mobile"
-                  name="mobile"
-                  required
-                  value={formData.mobile}
-                  onChange={handleChange}
-                  placeholder={t('enquirePage.mobilePlaceholder')}
-                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#E5DCCD] rounded-md bg-white text-[#1F0E0A] placeholder-[#9E8E87] focus:border-[#D6A33A] focus:outline-hidden transition-colors"
-                />
-              </div>
-
-              {/* District */}
-              <div>
-                <label
-                  htmlFor="district"
-                  className="block text-xs sm:text-sm text-[#4A3831] font-medium mb-1.5"
-                >
-                  {t('enquirePage.district')}
-                </label>
-                <select
-                  id="district"
-                  name="district"
-                  value={formData.district}
-                  onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#E5DCCD] rounded-md bg-white text-[#1F0E0A] focus:border-[#D6A33A] focus:outline-hidden transition-colors"
-                >
-                  <option value="">{t('enquirePage.selectDistrict')}</option>
-                  {biharDistricts.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Enquiry Category */}
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block text-xs sm:text-sm text-[#4A3831] font-medium mb-1.5"
-                >
-                  {t('enquirePage.enquiryCategory')}
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#E5DCCD] rounded-md bg-white text-[#1F0E0A] focus:border-[#D6A33A] focus:outline-hidden transition-colors"
-                >
-                  {categories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Message */}
-              <div className="md:col-span-2">
-                <label
-                  htmlFor="message"
-                  className="block text-xs sm:text-sm text-[#4A3831] font-medium mb-1.5"
-                >
-                  {t('enquirePage.message')}
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder={t('enquirePage.messagePlaceholder')}
-                  className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#E5DCCD] rounded-md bg-white text-[#1F0E0A] placeholder-[#9E8E87] focus:border-[#D6A33A] focus:outline-hidden transition-colors resize-y"
-                />
-              </div>
-            </div>
-
-            {/* Checkbox Agreement */}
-            <div className="flex items-start gap-2.5 pt-2">
-              <input
-                type="checkbox"
-                id="agreed"
-                name="agreed"
-                checked={formData.agreed}
-                onChange={handleChange}
-                required
-                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#CB9010] focus:ring-[#CB9010] cursor-pointer"
-              />
-              <label
-                htmlFor="agreed"
-                className="text-xs sm:text-sm text-[#6B5A52] cursor-pointer select-none"
-              >
-                {t('enquirePage.agreeTerms')}
-              </label>
-            </div>
+            {formError && (
+              <p role="alert" className="rounded-lg border border-[#F3C9C4] bg-[#FDF1EF] px-4 py-3 text-xs sm:text-sm text-[#B42318]">
+                {formError}
+              </p>
+            )}
 
             {/* Submit Button */}
             <div className="pt-2">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center px-8 py-3 bg-[#D6A33A] hover:bg-[#C28F27] text-[#1E0904] font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition-all duration-200 cursor-pointer active:scale-95"
+                disabled={submitting}
+                className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#D6A33A] hover:bg-[#C28F27] text-[#1E0904] font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-wait"
               >
+                {submitting && <Loader2 size={15} className="animate-spin" />}
                 {t('enquirePage.submitBtn')}
               </button>
             </div>
@@ -309,4 +119,3 @@ export default function EnquireForm() {
     </section>
   );
 }
-

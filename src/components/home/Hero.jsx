@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { Calendar, MapPin } from 'lucide-react';
-
-import hero1 from '../../assets/hero/heros-1.jpg';
-import hero2 from '../../assets/hero/heros-2.jpg';
-import hero3 from '../../assets/hero/heros-3.jpg';
+import { useHomeSection, useLocalized } from '../../content/siteContent';
+import { resolveImage } from '../../content/assets';
+import CmsLink from '../../content/CmsLink';
 
 export default function Hero() {
-  const { t } = useTranslation();
+  const c = useHomeSection('hero');
+  const tx = useLocalized();
   const [activeSlide, setActiveSlide] = useState(0);
 
-  const slides = [hero1, hero2, hero3];
+  const slides = c.slides.map((slide) => resolveImage(slide.image)).filter(Boolean);
 
   // Auto-play carousel transition every 5 seconds
   useEffect(() => {
+    if (slides.length < 2) return undefined;
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
@@ -45,7 +44,7 @@ export default function Hero() {
           className="text-[11px] sm:text-xs font-bold text-[#E5A93C] tracking-widest uppercase mb-2 sm:mb-2.5"
           style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.95)' }}
         >
-          {t('hero.venue')}
+          {tx(c.venue)}
         </span>
 
         {/* Main Heading */}
@@ -53,8 +52,8 @@ export default function Hero() {
           className="text-3xl sm:text-4xl md:text-5xl font-serif text-white tracking-tight leading-tight"
           style={{ textShadow: '0 3px 12px rgba(0, 0, 0, 0.95), 0 1px 3px rgba(0, 0, 0, 0.9)' }}
         >
-          <span className="block font-medium">{t('hero.titleLine1')}</span>
-          <span className="block font-serif">{t('hero.titleLine2')}</span>
+          <span className="block font-medium">{tx(c.titleLine1)}</span>
+          <span className="block font-serif">{tx(c.titleLine2)}</span>
         </h1>
 
         {/* Subheading in Gold */}
@@ -62,7 +61,7 @@ export default function Hero() {
           className="mt-2 text-base sm:text-lg md:text-xl text-[#E5A93C] font-serif italic tracking-wide font-normal"
           style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.95)' }}
         >
-          {t('hero.subheading')}
+          {tx(c.subheading)}
         </p>
 
         {/* Description Paragraph */}
@@ -70,7 +69,7 @@ export default function Hero() {
           className="mt-2.5 text-xs sm:text-[13px] md:text-sm text-[#F0EAE1] max-w-xl font-normal leading-relaxed"
           style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.9)' }}
         >
-          {t('hero.description')}
+          {tx(c.description)}
         </p>
 
         {/* Event Meta Details: Date & Location */}
@@ -80,28 +79,28 @@ export default function Hero() {
         >
           <div className="flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5 text-[#E5A93C]" />
-            <span>{t('hero.dates')}</span>
+            <span>{tx(c.dates)}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <MapPin className="w-3.5 h-3.5 text-[#E5A93C]" />
-            <span>{t('hero.location')}</span>
+            <span>{tx(c.location)}</span>
           </div>
         </div>
 
         {/* CTA Buttons */}
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3.5">
-          <Link
-            to="/get-involved"
+          <CmsLink
+            to={c.primaryLink}
             className="inline-flex items-center justify-center bg-[#CB9010] hover:bg-[#B8800B] text-[#370C01] font-bold text-xs tracking-wider uppercase px-6 sm:px-7 py-2.5 rounded-full shadow-md shadow-black/30 transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
           >
-            {t('hero.getPass')}
-          </Link>
-          <Link
-            to="/enquire"
+            {tx(c.primaryLabel)}
+          </CmsLink>
+          <CmsLink
+            to={c.secondaryLink}
             className="inline-flex items-center justify-center border border-[#CB9010] hover:bg-[#CB9010]/15 text-[#CB9010] hover:text-[#E5A93C] font-bold text-xs tracking-wider uppercase px-6 sm:px-7 py-2.5 rounded-full transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
           >
-            {t('hero.enquireNow')}
-          </Link>
+            {tx(c.secondaryLabel)}
+          </CmsLink>
         </div>
 
         {/* Organised by footer text */}
@@ -109,7 +108,7 @@ export default function Hero() {
           className="mt-4 sm:mt-5 text-[10px] sm:text-[11px] text-[#D6C5B3] font-medium tracking-wide"
           style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.95)' }}
         >
-          {t('hero.organizedBy')}
+          {tx(c.organizedBy)}
         </p>
 
         {/* Carousel Pagination Dots */}

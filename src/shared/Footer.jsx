@@ -1,11 +1,12 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Mail, Phone } from 'lucide-react';
-import biharSetuLogo from '../assets/bihar-setu-navbar-logo.png';
-import expLogo from '../assets/404-experiences-logo-light.png';
-import biharTourismLogo from '../assets/bihar-tourism-logo.png';
+import { Globe, Mail, MapPin, Phone } from 'lucide-react';
+import { safeHref, useHomeSection, useLocalized } from '../content/siteContent';
+import { resolveImage } from '../content/assets';
+import { SOCIAL_PLATFORMS } from '../content/icons';
+import CmsLink from '../content/CmsLink';
 
-function InstagramIcon({ size = 16, className = '' }) {
+// lucide-react has no brand icons, so these are drawn here in the same stroke style.
+function StrokeIcon({ size = 16, className = '', children }) {
   return (
     <svg
       width={size}
@@ -18,80 +19,117 @@ function InstagramIcon({ size = 16, className = '' }) {
       strokeLinejoin="round"
       className={className}
     >
+      {children}
+    </svg>
+  );
+}
+
+function InstagramIcon(props) {
+  return (
+    <StrokeIcon {...props}>
       <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
       <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-    </svg>
+    </StrokeIcon>
   );
 }
 
-function FacebookIcon({ size = 16, className = '' }) {
+function FacebookIcon(props) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
+    <StrokeIcon {...props}>
       <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-    </svg>
+    </StrokeIcon>
   );
 }
 
-function LinkedinIcon({ size = 16, className = '' }) {
+function LinkedinIcon(props) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
+    <StrokeIcon {...props}>
       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
       <rect width="4" height="12" x="2" y="9" />
       <circle cx="4" cy="4" r="2" />
-    </svg>
+    </StrokeIcon>
   );
 }
 
-function YoutubeIcon({ size = 16, className = '' }) {
+function YoutubeIcon(props) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
+    <StrokeIcon {...props}>
       <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
       <polygon points="10 15 15 12 10 9" fill="currentColor" stroke="none" />
-    </svg>
+    </StrokeIcon>
   );
+}
+
+function XIcon(props) {
+  return (
+    <StrokeIcon {...props}>
+      <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+      <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+    </StrokeIcon>
+  );
+}
+
+function WhatsappIcon(props) {
+  return (
+    <StrokeIcon {...props}>
+      <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+      <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+    </StrokeIcon>
+  );
+}
+
+const SOCIAL_ICONS = {
+  instagram: InstagramIcon,
+  facebook: FacebookIcon,
+  linkedin: LinkedinIcon,
+  youtube: YoutubeIcon,
+  x: XIcon,
+  whatsapp: WhatsappIcon,
+  website: Globe,
+};
+
+const CONTACT_ICONS = { email: Mail, phone: Phone, whatsapp: WhatsappIcon, address: MapPin };
+
+const listOf = (value) => (Array.isArray(value) ? value.filter(Boolean) : []);
+const trimmed = (value) => String(value ?? '').trim();
+
+// wa.me needs the number with its country code; a bare 10-digit number is taken as Indian.
+function whatsappHref(number) {
+  const digits = number.replace(/\D/g, '');
+  return `https://wa.me/${digits.length === 10 ? `91${digits}` : digits}`;
+}
+const isPhoneNumber = (value) => /^[+\d\s()-]+$/.test(value);
+
+// Wraps children in a link only when the admin gave one.
+function MaybeLink({ to, className, children }) {
+  if (!trimmed(to)) return children;
+  return (
+    <CmsLink to={to} className={className}>
+      {children}
+    </CmsLink>
+  );
+}
+
+function contactHref(type, value) {
+  if (type === 'email') return `mailto:${value}`;
+  if (type === 'phone') return `tel:${value.replace(/\s/g, '')}`;
+  if (type === 'whatsapp') return whatsappHref(value);
+  return null;
 }
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const f = useHomeSection('footer');
+  const tx = useLocalized();
 
-  const quickLinks = [
-    { labelKey: 'footer.linkPolicy', href: '#policy' },
-    { labelKey: 'footer.linkReport', href: '#report' },
-    { labelKey: 'footer.linkAbout', href: '#about' },
-    { labelKey: 'footer.linkBlogs', href: '#blogs' },
-    { labelKey: 'footer.linkFaqs', href: '#faqs' },
-  ];
+  // Items the admin left empty are skipped rather than shown blank.
+  const socialLinks = listOf(f.socialLinks).filter((s) => trimmed(s.link));
+  const legalLinks = listOf(f.legalLinks).filter((l) => tx(l.label));
+  const quickLinks = listOf(f.quickLinks).filter((l) => tx(l.label));
+  const partnerLogos = listOf(f.partnerLogos).filter((p) => resolveImage(p.image));
+  const contacts = listOf(f.contacts).filter((c) => trimmed(c.value));
+  const logoSrc = resolveImage(f.logo);
+  const organiserLogoSrc = resolveImage(f.organiserLogo);
 
   return (
     <footer className="bg-[#521810] text-white border-t border-[#3B0E07] w-full">
@@ -102,169 +140,186 @@ export default function Footer() {
             {/* Header Text */}
             <div className="mb-3">
               <span className="block text-white font-serif font-bold text-xl sm:text-2xl tracking-wider leading-none">
-                {t('footer.titleLine1')}
+                {tx(f.titleLine1)}
               </span>
               <span className="block text-[#D6A33A] font-serif font-bold text-xl sm:text-2xl tracking-wider leading-tight mt-1">
-                {t('footer.titleLine2')}
+                {tx(f.titleLine2)}
               </span>
             </div>
 
             {/* Logo */}
-            <a href="#" className="inline-block mb-5 group">
-              <img
-                src={biharSetuLogo}
-                alt="Bihar Setu Logo"
-                className="h-14 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
-              />
-            </a>
+            {logoSrc && (
+              <CmsLink to={trimmed(f.logoLink) || '/'} className="inline-block mb-5 group">
+                <img
+                  src={logoSrc}
+                  alt={tx(f.titleLine1) || 'Logo'}
+                  className="h-14 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
+                />
+              </CmsLink>
+            )}
 
             {/* Social Icons */}
-            <div className="flex items-center gap-3 mb-5">
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Instagram"
-                className="w-9 h-9 rounded-md border border-[#8C4A42] flex items-center justify-center text-white/80 hover:text-white hover:border-[#D6A33A] hover:bg-[#681E15] transition-all duration-200"
-              >
-                <InstagramIcon size={16} />
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Facebook"
-                className="w-9 h-9 rounded-md border border-[#8C4A42] flex items-center justify-center text-white/80 hover:text-white hover:border-[#D6A33A] hover:bg-[#681E15] transition-all duration-200"
-              >
-                <FacebookIcon size={16} />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="LinkedIn"
-                className="w-9 h-9 rounded-md border border-[#8C4A42] flex items-center justify-center text-white/80 hover:text-white hover:border-[#D6A33A] hover:bg-[#681E15] transition-all duration-200"
-              >
-                <LinkedinIcon size={16} />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="YouTube"
-                className="w-9 h-9 rounded-md border border-[#8C4A42] flex items-center justify-center text-white/80 hover:text-white hover:border-[#D6A33A] hover:bg-[#681E15] transition-all duration-200"
-              >
-                <YoutubeIcon size={16} />
-              </a>
-            </div>
+            {socialLinks.length > 0 && (
+              <div className="flex items-center gap-3 mb-5">
+                {socialLinks.map((social, idx) => {
+                  const Icon = SOCIAL_ICONS[social.platform] || Globe;
+                  const link = trimmed(social.link);
+                  const href = social.platform === 'whatsapp' && isPhoneNumber(link) ? whatsappHref(link) : safeHref(link);
+                  return (
+                    <a
+                      key={idx}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={SOCIAL_PLATFORMS.find((p) => p.value === social.platform)?.label || 'Social media'}
+                      className="w-9 h-9 rounded-md border border-[#8C4A42] flex items-center justify-center text-white/80 hover:text-white hover:border-[#D6A33A] hover:bg-[#681E15] transition-all duration-200"
+                    >
+                      <Icon size={16} />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Copyright, Policies & Developer Credits */}
             <div className="space-y-1.5 text-xs text-white/70">
-              <p className="font-normal">{t('footer.copyright')}</p>
-              <div className="flex flex-wrap items-center gap-2 text-white/60">
-                <a href="#privacy" className="hover:text-white transition-colors">
-                  {t('footer.privacyPolicy')}
-                </a>
-                <span>|</span>
-                <a href="#terms" className="hover:text-white transition-colors">
-                  {t('footer.termsConditions')}
-                </a>
-                <span>|</span>
-                <a href="#cookie" className="hover:text-white transition-colors">
-                  {t('footer.cookiePolicy')}
-                </a>
-              </div>
-              <p className="text-[11px] text-white/60 pt-1">
-                Designed & Developed by{' '}
-                <a
-                  href="https://filliptechnologies.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[#D6A33A] hover:text-[#F7C568] font-medium transition-colors underline underline-offset-2"
-                >
-                  Fillip Technologies
-                </a>
-              </p>
+              {tx(f.copyright) && <p className="font-normal">{tx(f.copyright)}</p>}
+              {legalLinks.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 text-white/60">
+                  {legalLinks.map((link, idx) => (
+                    <React.Fragment key={idx}>
+                      {idx > 0 && <span>|</span>}
+                      <CmsLink to={link.link} className="hover:text-white transition-colors">
+                        {tx(link.label)}
+                      </CmsLink>
+                    </React.Fragment>
+                  ))}
+                </div>
+              )}
+              {tx(f.creditName) && (
+                <p className="text-[11px] text-white/60 pt-1">
+                  {tx(f.creditText)}{' '}
+                  {trimmed(f.creditLink) ? (
+                    <CmsLink
+                      to={f.creditLink}
+                      className="text-[#D6A33A] hover:text-[#F7C568] font-medium transition-colors underline underline-offset-2"
+                    >
+                      {tx(f.creditName)}
+                    </CmsLink>
+                  ) : (
+                    <span className="text-[#D6A33A] font-medium">{tx(f.creditName)}</span>
+                  )}
+                </p>
+              )}
             </div>
           </div>
 
           {/* Column 2: Quick Links & Partner Logos (lg:col-span-3) */}
           <div className="lg:col-span-3 flex flex-col justify-start">
-            <h3 className="text-white font-medium text-base mb-3 sm:mb-4">
-              {t('footer.quickLinks')}
-            </h3>
+            {tx(f.quickLinksHeading) && (
+              <h3 className="text-white font-medium text-base mb-3 sm:mb-4">
+                {tx(f.quickLinksHeading)}
+              </h3>
+            )}
 
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.labelKey}>
-                  <a
-                    href={link.href}
-                    className="text-white/70 hover:text-[#D6A33A] text-xs sm:text-sm transition-colors duration-200"
-                  >
-                    {t(link.labelKey)}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {quickLinks.length > 0 && (
+              <ul className="space-y-2">
+                {quickLinks.map((link, idx) => (
+                  <li key={idx}>
+                    <CmsLink
+                      to={link.link}
+                      className="text-white/70 hover:text-[#D6A33A] text-xs sm:text-sm transition-colors duration-200"
+                    >
+                      {tx(link.label)}
+                    </CmsLink>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             {/* Partner Logos */}
-            <div className="flex items-center gap-5 mt-6 pt-5 border-t border-[#6B241C]">
-              <img
-                src={expLogo}
-                alt="404 Experiences"
-                className="h-9 sm:h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
-              />
-              <img
-                src={biharTourismLogo}
-                alt="Bihar Tourism"
-                className="h-9 sm:h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
-              />
-            </div>
+            {partnerLogos.length > 0 && (
+              <div className="flex items-center gap-5 mt-6 pt-5 border-t border-[#6B241C]">
+                {partnerLogos.map((logo, idx) => (
+                  <MaybeLink key={idx} to={logo.link}>
+                    <img
+                      src={resolveImage(logo.image)}
+                      alt={logo.name}
+                      className="h-9 sm:h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+                    />
+                  </MaybeLink>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Column 3: Organised by & Get in touch (lg:col-span-4) */}
           <div className="lg:col-span-4 flex flex-col justify-start">
-            <span className="text-white/70 text-xs sm:text-sm mb-2">
-              {t('footer.organisedBy')}
-            </span>
+            {tx(f.organisedByLabel) && (
+              <span className="text-white/70 text-xs sm:text-sm mb-2">
+                {tx(f.organisedByLabel)}
+              </span>
+            )}
 
-            {/* 404 Experiences Organizer Info */}
+            {/* Organiser Info */}
             <div className="mb-2">
-              <img
-                src={expLogo}
-                alt="404 Experiences"
-                className="h-12 sm:h-14 w-auto object-contain mb-1"
-              />
-              <p className="text-white/60 text-[11px] italic">
-                {t('footer.tagline404')}
-              </p>
-              <p className="text-white/85 text-xs sm:text-sm font-medium mt-1">
-                {t('footer.summitEdition')}
-              </p>
+              {organiserLogoSrc && (
+                <MaybeLink to={f.organiserLink} className="inline-block">
+                  <img
+                    src={organiserLogoSrc}
+                    alt={f.organiserName || tx(f.organisedByLabel)}
+                    className="h-12 sm:h-14 w-auto object-contain mb-1"
+                  />
+                </MaybeLink>
+              )}
+              {tx(f.organiserTagline) && (
+                <p className="text-white/60 text-[11px] italic">
+                  {tx(f.organiserTagline)}
+                </p>
+              )}
+              {tx(f.summitEdition) && (
+                <p className="text-white/85 text-xs sm:text-sm font-medium mt-1">
+                  {tx(f.summitEdition)}
+                </p>
+              )}
             </div>
 
             {/* Get in touch */}
-            <div className="mt-5">
-              <h4 className="text-white font-medium text-sm sm:text-base mb-2.5">
-                {t('footer.getInTouch')}
-              </h4>
-              <div className="space-y-1.5">
-                <a
-                  href="mailto:info@biharsetu.in"
-                  className="flex items-center gap-2 text-[#E5A93C] hover:text-[#F7C568] text-xs sm:text-sm transition-colors"
-                >
-                  <Mail size={14} className="shrink-0 text-[#E5A93C]" />
-                  <span>info@biharsetu.in</span>
-                </a>
-                <a
-                  href="tel:9153881025"
-                  className="flex items-center gap-2 text-[#E5A93C] hover:text-[#F7C568] text-xs sm:text-sm transition-colors"
-                >
-                  <Phone size={14} className="shrink-0 text-[#E5A93C]" />
-                  <span>9153881025</span>
-                </a>
+            {(tx(f.getInTouchHeading) || contacts.length > 0) && (
+              <div className="mt-5">
+                {tx(f.getInTouchHeading) && (
+                  <h4 className="text-white font-medium text-sm sm:text-base mb-2.5">
+                    {tx(f.getInTouchHeading)}
+                  </h4>
+                )}
+                <div className="space-y-1.5">
+                  {contacts.map((contact, idx) => {
+                    const Icon = CONTACT_ICONS[contact.type] || Mail;
+                    const value = trimmed(contact.value);
+                    const href = contactHref(contact.type, value);
+                    if (!href) {
+                      return (
+                        <p key={idx} className="flex items-start gap-2 text-[#E5A93C] text-xs sm:text-sm">
+                          <Icon size={14} className="shrink-0 mt-0.5 text-[#E5A93C]" />
+                          <span>{value}</span>
+                        </p>
+                      );
+                    }
+                    return (
+                      <a
+                        key={idx}
+                        href={href}
+                        {...(contact.type === 'whatsapp' ? { target: '_blank', rel: 'noreferrer' } : {})}
+                        className="flex items-center gap-2 text-[#E5A93C] hover:text-[#F7C568] text-xs sm:text-sm transition-colors"
+                      >
+                        <Icon size={14} className="shrink-0 text-[#E5A93C]" />
+                        <span>{value}</span>
+                      </a>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

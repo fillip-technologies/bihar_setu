@@ -1,50 +1,15 @@
 import React, { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
-import card1Img from '../../assets/hero/heros-1.jpg';
-import card2Img from '../../assets/hero/heros-3.jpg';
-import card3Img from '../../assets/hero/hero-about.jpg';
-import card4Img from '../../assets/hero/masterclass.jpg';
-import card5Img from '../../assets/hero/investors.jpg';
+import { useHomeSection, useLocalized } from '../../content/siteContent';
+import { resolveImage } from '../../content/assets';
+import CmsLink from '../../content/CmsLink';
 
 export default function ExploreSummit() {
-  const { t } = useTranslation();
+  const c = useHomeSection('explore');
+  const tx = useLocalized();
   const scrollRef = useRef(null);
 
-  const cards = [
-    {
-      img: card1Img,
-      titleKey: 'exploreSection.card1Title',
-      descKey: 'exploreSection.card1Desc',
-      alt: '8 Panel Sessions',
-    },
-    {
-      img: card2Img,
-      titleKey: 'exploreSection.card2Title',
-      descKey: 'exploreSection.card2Desc',
-      alt: '114 Dish Food Pavilion',
-    },
-    {
-      img: card3Img,
-      titleKey: 'exploreSection.card3Title',
-      descKey: 'exploreSection.card3Desc',
-      alt: 'District Showcases',
-    },
-    {
-      img: card4Img,
-      titleKey: 'exploreSection.card4Title',
-      descKey: 'exploreSection.card4Desc',
-      alt: 'Hospitality Masterclasses',
-    },
-    {
-      img: card5Img,
-      titleKey: 'exploreSection.card5Title',
-      descKey: 'exploreSection.card5Desc',
-      alt: 'Investor Roundtables',
-    },
-  ];
+  const cards = c.cards;
 
   const handleScroll = (direction) => {
     if (scrollRef.current) {
@@ -62,7 +27,7 @@ export default function ExploreSummit() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Section Title */}
         <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-serif font-normal text-white tracking-wide mb-10 sm:mb-12">
-          {t('exploreSection.heading')}
+          {tx(c.heading)}
         </h2>
 
         {/* Carousel / Cards Row */}
@@ -101,8 +66,8 @@ export default function ExploreSummit() {
                 {/* Card Top Image */}
                 <div className="relative h-52 sm:h-56 lg:h-60 w-full overflow-hidden bg-stone-900">
                   <img
-                    src={card.img}
-                    alt={card.alt}
+                    src={resolveImage(card.image)}
+                    alt={tx(card.title)}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-105"
                   />
                 </div>
@@ -110,10 +75,10 @@ export default function ExploreSummit() {
                 {/* Card Bottom Golden Box */}
                 <div className="bg-[#D6A33A] p-4 sm:p-5 flex flex-col justify-between grow">
                   <h3 className="text-sm sm:text-base font-bold text-[#200A05] leading-snug">
-                    {t(card.titleKey)}
+                    {tx(card.title)}
                   </h3>
                   <p className="text-xs sm:text-[13px] text-[#3D1409] font-normal leading-snug mt-1">
-                    {t(card.descKey)}
+                    {tx(card.description)}
                   </p>
                 </div>
               </div>
@@ -123,12 +88,12 @@ export default function ExploreSummit() {
 
         {/* Bottom Call To Action Button */}
         <div className="mt-10 sm:mt-12 flex justify-center">
-          <Link
-            to="/agenda#register-form"
+          <CmsLink
+            to={c.buttonLink}
             className="inline-flex items-center justify-center bg-[#D6A33A] hover:bg-[#C28E28] text-[#240803] font-bold text-xs tracking-wider uppercase px-8 py-3.5 rounded-full shadow-lg transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            {t('exploreSection.registerBtn')}
-          </Link>
+            {tx(c.buttonLabel)}
+          </CmsLink>
         </div>
       </div>
     </section>

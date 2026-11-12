@@ -1,24 +1,18 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { User } from 'lucide-react';
-import cmImg from '../../assets/cm.jpg';
-import tourismMinisterImg from '../../assets/tourism-minister.jpg';
-import secretaryImg from '../../assets/secretary-bihar.avif';
-import tourismSecretaryImg from '../../assets/tourism-seceraty.jpg';
+import { useHomeSection, useLocalized } from '../../content/siteContent';
+import { resolveImage } from '../../content/assets';
 
 export default function DignitariesStrip() {
-  const { t } = useTranslation();
+  const { items } = useHomeSection('dignitaries');
+  const tx = useLocalized();
 
-  const baseLeaders = [
-    { id: 'cm-1', roleKey: 'dignitaries.cm', image: cmImg },
-    { id: 'tourism-minister-1', roleKey: 'dignitaries.tourismMinister', image: tourismMinisterImg },
-    { id: 'chief-secretary-1', roleKey: 'dignitaries.chiefSecretary', image: secretaryImg },
-    { id: 'tourism-secretary-1', roleKey: 'dignitaries.tourismSecretary', image: tourismSecretaryImg },
-    { id: 'cm-2', roleKey: 'dignitaries.cm', image: cmImg },
-    { id: 'tourism-minister-2', roleKey: 'dignitaries.tourismMinister', image: tourismMinisterImg },
-    { id: 'chief-secretary-2', roleKey: 'dignitaries.chiefSecretary', image: secretaryImg },
-    { id: 'tourism-secretary-2', roleKey: 'dignitaries.tourismSecretary', image: tourismSecretaryImg },
-  ];
+  // Each dignitary appears twice per strip, as before.
+  const baseLeaders = [...items, ...items].map((item, idx) => ({
+    id: idx,
+    name: tx(item.name),
+    image: resolveImage(item.image),
+  }));
 
   // Duplicate for seamless infinite loop (0% to -50%)
   const leadersLoop = [...baseLeaders, ...baseLeaders];
@@ -41,7 +35,7 @@ export default function DignitariesStrip() {
               {leader.image ? (
                 <img
                   src={leader.image}
-                  alt={t(leader.roleKey)}
+                  alt={leader.name}
                   className="w-full h-full object-cover object-top"
                   loading="lazy"
                 />
@@ -52,7 +46,7 @@ export default function DignitariesStrip() {
 
             {/* Title / Role */}
             <span className="text-xs sm:text-[13px] font-semibold text-[#2D0B02] whitespace-nowrap">
-              {t(leader.roleKey)}
+              {leader.name}
             </span>
           </div>
         ))}

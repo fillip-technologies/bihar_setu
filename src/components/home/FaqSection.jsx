@@ -1,35 +1,15 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useHomeSection, useLocalized } from '../../content/siteContent';
+import LinkifiedText from '../../content/LinkifiedText';
 
 export default function FaqSection() {
-  const { t } = useTranslation();
+  const c = useHomeSection('faq');
+  const tx = useLocalized();
 
   // Track which FAQs are expanded; initialize with the first two open
   const [openIndices, setOpenIndices] = useState({ 0: true, 1: true });
 
-  const faqs = [
-    {
-      qKey: 'faqSection.q1',
-      aKey: 'faqSection.a1',
-    },
-    {
-      qKey: 'faqSection.q2',
-      aKey: 'faqSection.a2',
-    },
-    {
-      qKey: 'faqSection.q3',
-      aKey: 'faqSection.a3',
-    },
-    {
-      qKey: 'faqSection.q4',
-      aKey: 'faqSection.a4',
-    },
-    {
-      qKey: 'faqSection.q5',
-      aKey: 'faqSection.a5',
-      hasEmail: true,
-    },
-  ];
+  const faqs = c.items;
 
   const toggleFaq = (index) => {
     setOpenIndices((prev) => ({
@@ -44,7 +24,7 @@ export default function FaqSection() {
         {/* Section Heading */}
         <div className="text-center mb-10 sm:mb-14">
           <h2 className="font-serif text-[#1F0E0A] text-3xl sm:text-4xl lg:text-[40px] font-normal tracking-tight">
-            {t('faqSection.heading')}
+            {tx(c.heading)}
           </h2>
         </div>
 
@@ -55,7 +35,7 @@ export default function FaqSection() {
 
             return (
               <div
-                key={faq.qKey}
+                key={index}
                 className="border-b border-[#E8DEC8] transition-colors"
               >
                 <button
@@ -65,7 +45,7 @@ export default function FaqSection() {
                   aria-expanded={isOpen}
                 >
                   <span className="text-[#1F0E0A] text-base sm:text-[17px] font-medium group-hover:text-[#7A2217] transition-colors pr-4">
-                    {t(faq.qKey)}
+                    {tx(faq.question)}
                   </span>
                   <span className="text-[#6B5A52] group-hover:text-[#7A2217] text-2xl font-light select-none transition-transform duration-200">
                     {isOpen ? '—' : '+'}
@@ -74,20 +54,12 @@ export default function FaqSection() {
 
                 {isOpen && (
                   <div className="pb-6 text-[#6B5A52] text-sm sm:text-[15px] leading-relaxed">
-                    {faq.hasEmail ? (
-                      <p>
-                        Contact{' '}
-                        <a
-                          href="mailto:info@biharsetu.in"
-                          className="text-[#96681E] hover:text-[#7A2217] underline font-medium"
-                        >
-                          info@biharsetu.in
-                        </a>{' '}
-                        or send a partnership enquiry.
-                      </p>
-                    ) : (
-                      <p>{t(faq.aKey)}</p>
-                    )}
+                    <p>
+                      <LinkifiedText
+                        text={tx(faq.answer)}
+                        linkClassName="text-[#96681E] hover:text-[#7A2217] underline font-medium"
+                      />
+                    </p>
                   </div>
                 )}
               </div>

@@ -1,16 +1,12 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import heroAboutImg from '../../assets/hero/summit-5.png';
+import { useHomeSection, useLocalized } from '../../content/siteContent';
+import { resolveImage } from '../../content/assets';
 
 export default function AboutEdition() {
-  const { t } = useTranslation();
+  const c = useHomeSection('about');
+  const tx = useLocalized();
 
-  const points = [
-    { titleKey: 'aboutSection.point1Title', textKey: 'aboutSection.point1Text' },
-    { titleKey: 'aboutSection.point2Title', textKey: 'aboutSection.point2Text' },
-    { titleKey: 'aboutSection.point3Title', textKey: 'aboutSection.point3Text' },
-    { titleKey: 'aboutSection.point4Title', textKey: 'aboutSection.point4Text' },
-  ];
+  const points = c.points;
 
   return (
     <section id="about" className="w-full bg-white py-12 sm:py-16 lg:py-20 border-b border-stone-100">
@@ -20,12 +16,12 @@ export default function AboutEdition() {
           <div className="flex flex-col items-start text-left">
             {/* Section Title */}
             <h2 className="font-serif text-[#1A0502] text-2xl sm:text-3xl lg:text-[34px] font-normal tracking-tight leading-tight">
-              {t('aboutSection.heading')}
+              {tx(c.heading)}
             </h2>
 
             {/* Intro Narrative */}
             <p className="mt-4 sm:mt-5 text-xs sm:text-[13.5px] text-[#5C443C] leading-relaxed font-sans max-w-[480px]">
-              {t('aboutSection.intro')}
+              {tx(c.intro)}
             </p>
 
             {/* 4 Key Points with Bold Leads */}
@@ -36,9 +32,9 @@ export default function AboutEdition() {
                   className="text-xs sm:text-[13px] text-[#5C443C] leading-relaxed font-sans max-w-[480px]"
                 >
                   <strong className="font-bold text-[#1A0502] mr-1">
-                    {t(pt.titleKey)}
+                    {tx(pt.title)}
                   </strong>
-                  <span>{t(pt.textKey)}</span>
+                  <span>{tx(pt.text)}</span>
                 </div>
               ))}
             </div>
@@ -48,8 +44,8 @@ export default function AboutEdition() {
           <div className="w-full flex items-start justify-center lg:justify-end">
             <div className="w-full max-w-[540px] overflow-hidden rounded-xl sm:rounded-2xl shadow-md border border-stone-200/60 aspect-[16/11]">
               <img
-                src={heroAboutImg}
-                alt="Mahabodhi Temple, Bodh Gaya at Sunset"
+                src={resolveImage(c.image)}
+                alt={tx(c.imageAlt)}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-105"
               />
             </div>

@@ -1,42 +1,15 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useHomeSection, useLocalized } from '../../content/siteContent';
 import { Mail, Phone } from 'lucide-react';
 
 export default function GetInTouch() {
-  const { t } = useTranslation();
+  const c = useHomeSection('contact');
+  const tx = useLocalized();
 
-  const contacts = [
-    {
-      titleKey: 'contactSection.card1Title',
-      type: 'email',
-      value: 'info@biharsetu.in',
-      href: 'mailto:info@biharsetu.in',
-    },
-    {
-      titleKey: 'contactSection.card2Title',
-      type: 'phone',
-      value: '9153881025',
-      href: 'tel:9153881025',
-    },
-    {
-      titleKey: 'contactSection.card3Title',
-      type: 'email',
-      value: 'info@biharsetu.in',
-      href: 'mailto:info@biharsetu.in',
-    },
-    {
-      titleKey: 'contactSection.card4Title',
-      type: 'email',
-      value: 'info@biharsetu.in',
-      href: 'mailto:info@biharsetu.in',
-    },
-    {
-      titleKey: 'contactSection.card5Title',
-      type: 'email',
-      value: 'info@biharsetu.in',
-      href: 'mailto:info@biharsetu.in',
-    },
-  ];
+  const contacts = c.cards.map((card) => ({
+    ...card,
+    href: card.type === 'phone' ? `tel:${String(card.value).replace(/\s/g, '')}` : `mailto:${card.value}`,
+  }));
 
   return (
     <section className="bg-white py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 w-full border-t border-[#F0EBE3]">
@@ -44,20 +17,20 @@ export default function GetInTouch() {
         {/* Section Heading */}
         <div className="text-center mb-10 sm:mb-14">
           <h2 className="font-serif text-[#1F0E0A] text-3xl sm:text-4xl lg:text-[40px] font-normal tracking-tight">
-            {t('contactSection.heading')}
+            {tx(c.heading)}
           </h2>
         </div>
 
         {/* 5 Contact Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
-          {contacts.map((contact) => (
+          {contacts.map((contact, idx) => (
             <div
-              key={contact.titleKey}
+              key={idx}
               className="bg-[#521810] rounded-lg sm:rounded-xl p-5 sm:p-6 flex flex-col justify-between min-h-[145px] shadow-md hover:bg-[#5E1B12] transition-colors duration-200"
             >
               {/* Card Title */}
               <h3 className="text-white text-sm sm:text-base font-normal sm:font-medium leading-snug">
-                {t(contact.titleKey)}
+                {tx(contact.title)}
               </h3>
 
               {/* Action / Value Link */}

@@ -3,10 +3,24 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { NAV_LINKS } from '../constants/navigation';
-import logo from '../assets/bihar-setu-navbar-logo.png';
+import { useHomeSection, useLocalized } from '../content/siteContent';
+import { resolveImage } from '../content/assets';
+import CmsLink from '../content/CmsLink';
+
+// Content field holding each menu item's label.
+const NAV_LABEL_FIELDS = {
+  home: 'navHome',
+  about: 'navAbout',
+  agenda: 'navAgenda',
+  speakers: 'navSpeakers',
+  partners: 'navPartners',
+  getInvolved: 'navGetInvolved',
+};
 
 export default function Navbar() {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
+  const header = useHomeSection('header');
+  const tx = useLocalized();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -37,7 +51,7 @@ export default function Navbar() {
           <div className="flex items-center shrink-0">
             <Link to="/" className="flex items-center group py-0.5">
               <img
-                src={logo}
+                src={resolveImage(header.logo)}
                 alt="Bihar Setu Logo"
                 className="h-11 sm:h-13 w-auto object-contain transition-transform group-hover:scale-105"
               />
@@ -58,7 +72,7 @@ export default function Navbar() {
                       : 'text-white hover:text-[#CB9010]'
                   }`}
                 >
-                  {t(`nav.${link.key}`)}
+                  {tx(header[NAV_LABEL_FIELDS[link.key]])}
                 </Link>
               );
             })}
@@ -93,20 +107,20 @@ export default function Navbar() {
             </div>
 
             {/* CTA 1: GET YOUR PASS (Filled Gold) */}
-            <Link
-              to="/get-involved"
+            <CmsLink
+              to={header.passLink}
               className="bg-[#CB9010] hover:bg-[#B8800B] text-[#370C01] font-bold text-xs tracking-wider uppercase px-5 py-2.5 rounded-full shadow-xs transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap inline-flex items-center justify-center"
             >
-              {t('nav.getPass')}
-            </Link>
+              {tx(header.passLabel)}
+            </CmsLink>
 
             {/* CTA 2: ENQUIRE NOW (Outlined Gold) */}
-            <Link
-              to="/enquire"
+            <CmsLink
+              to={header.enquireLink}
               className="border border-[#CB9010] hover:bg-[#CB9010]/15 text-[#CB9010] hover:text-[#E0A62E] font-bold text-xs tracking-wider uppercase px-5 py-2.5 rounded-full transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap inline-flex items-center justify-center"
             >
-              {t('nav.enquireNow')}
-            </Link>
+              {tx(header.enquireLabel)}
+            </CmsLink>
           </div>
 
           {/* Mobile Menu Button */}
@@ -166,27 +180,27 @@ export default function Navbar() {
                       : 'text-white hover:bg-[#521810]/60 hover:text-[#CB9010]'
                   }`}
                 >
-                  {t(`nav.${link.key}`)}
+                  {tx(header[NAV_LABEL_FIELDS[link.key]])}
                 </Link>
               );
             })}
           </div>
 
           <div className="pt-3 border-t border-[#521810] flex flex-col sm:flex-row gap-2">
-            <Link
-              to="/get-involved"
+            <CmsLink
+              to={header.passLink}
               onClick={() => setIsMobileMenuOpen(false)}
               className="w-full bg-[#CB9010] hover:bg-[#B8800B] text-[#370C01] font-bold text-xs tracking-wider uppercase py-2.5 rounded-full shadow-xs transition-all text-center"
             >
-              {t('nav.getPass')}
-            </Link>
-            <Link
-              to="/enquire"
+              {tx(header.passLabel)}
+            </CmsLink>
+            <CmsLink
+              to={header.enquireLink}
               onClick={() => setIsMobileMenuOpen(false)}
               className="w-full border border-[#CB9010] hover:bg-[#CB9010]/15 text-[#CB9010] font-bold text-xs tracking-wider uppercase py-2.5 rounded-full transition-all text-center inline-flex items-center justify-center"
             >
-              {t('nav.enquireNow')}
-            </Link>
+              {tx(header.enquireLabel)}
+            </CmsLink>
           </div>
         </div>
       )}

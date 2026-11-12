@@ -8,4 +8,11 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    // The API (../server) runs on :5000; VITE_API_URL overrides this for production builds.
+    proxy: {
+      '/api': 'http://localhost:5000',
+      '/uploads': 'http://localhost:5000',
+    },
+  },
 })
