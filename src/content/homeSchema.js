@@ -1,13 +1,6 @@
-// What the admin panel shows for each Home page section, in page order.
-// Field types: text / textarea (English + Hindi), string (single value: link, email, phone), image, icon, select, list.
+// What the admin panel shows for each Home page section, in page order (field types are listed in schemaFields.js).
 import { CONTACT_TYPES, SECTOR_ICONS, SOCIAL_PLATFORMS } from './icons';
-
-const text = (key, label) => ({ key, label, type: 'text' });
-const textarea = (key, label) => ({ key, label, type: 'textarea' });
-const string = (key, label, hint) => ({ key, label, type: 'string', hint });
-const image = (key, label) => ({ key, label, type: 'image' });
-const list = (key, label, itemLabel, fields) => ({ key, label, type: 'list', itemLabel, fields });
-const link = (key, label) => string(key, label, 'A page like /agenda, or a full https:// link');
+import { image, link, list, string, text, textarea } from './schemaFields';
 
 export const HOME_SECTIONS = [
   {
@@ -195,15 +188,3 @@ export const HOME_SECTIONS = [
   },
 ];
 
-// Empty value for a newly added list item.
-export function emptyItem(fields) {
-  return Object.fromEntries(
-    fields.map((f) => {
-      if (f.type === 'text' || f.type === 'textarea') return [f.key, { en: '', hi: '' }];
-      if (f.type === 'icon') return [f.key, f.options[0]];
-      if (f.type === 'select') return [f.key, f.options[0].value];
-      if (f.type === 'list') return [f.key, []];
-      return [f.key, ''];
-    }),
-  );
-}

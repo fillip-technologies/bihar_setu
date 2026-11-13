@@ -1,5 +1,24 @@
+import { HOME_SECTIONS } from '../../content/homeSchema';
+import { ABOUT_SECTIONS } from '../../content/aboutSchema';
+
 // Where each form lives on the public website.
 export const PUBLIC_PATHS = { agenda: '/agenda#register-form', enquire: '/enquire' };
+
+// Website pages with editable content. Each has an editor at /admin/<key>/<section>.
+// `shared` lists sections a page shows from another page: they are edited there and only linked from here.
+export const CONTENT_PAGES = [
+  { key: 'home', title: 'Home page', path: '/', sections: HOME_SECTIONS },
+  {
+    key: 'about',
+    title: 'About page',
+    path: '/about',
+    sections: ABOUT_SECTIONS,
+    shared: [
+      { page: 'home', section: 'about', title: 'First Edition' },
+      { page: 'home', section: 'contact', title: 'Get in Touch' },
+    ],
+  },
+];
 
 export const FIELD_TYPES = [
   { value: 'text', label: 'Short text' },
