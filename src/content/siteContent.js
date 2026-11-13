@@ -1,9 +1,13 @@
 import { createContext, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HOME_DEFAULTS } from './homeDefaults';
+import { ABOUT_DEFAULTS } from './aboutDefaults';
 
-// Saved sections from the admin panel, keyed by page: { home: { hero: {...}, ... } }.
-export const SiteContentContext = createContext({ home: {} });
+// Built-in content of every editable page. SiteContentProvider loads the saved content of each of these pages.
+export const PAGE_DEFAULTS = { home: HOME_DEFAULTS, about: ABOUT_DEFAULTS };
+
+// Saved sections from the admin panel, keyed by page: { home: { hero: {...}, ... }, about: { ... } }.
+export const SiteContentContext = createContext({ home: {}, about: {} });
 
 const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
@@ -18,10 +22,13 @@ export function mergeContent(defaults, saved) {
   return saved;
 }
 
-export function useHomeSection(key) {
-  const { home } = useContext(SiteContentContext);
-  return mergeContent(HOME_DEFAULTS[key], home[key]);
+export function usePageSection(page, key) {
+  const pages = useContext(SiteContentContext);
+  return mergeContent(PAGE_DEFAULTS[page][key], pages[page]?.[key]);
 }
+
+export const useHomeSection = (key) => usePageSection('home', key);
+export const useAboutSection = (key) => usePageSection('about', key);
 
 // Picks the current language from a { en, hi } text, falling back to English.
 export function useLocalized() {

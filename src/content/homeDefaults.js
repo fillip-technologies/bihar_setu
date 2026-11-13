@@ -1,11 +1,6 @@
 // Original Home page content. Text comes from the locale files so English and Hindi stay in sync;
 // anything saved in the admin panel overrides these values section by section.
-import en from '../i18n/locales/en.json';
-import hi from '../i18n/locales/hi.json';
-
-const get = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj) ?? '';
-const L = (path) => ({ en: get(en, path), hi: get(hi, path) });
-const range = (n, fn) => Array.from({ length: n }, (_, i) => fn(i + 1));
+import { L, range } from './localeText';
 
 export const HOME_DEFAULTS = {
   header: {

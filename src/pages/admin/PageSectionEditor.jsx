@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { ExternalLink, ImagePlus, Loader2, Plus, Trash2 } from 'lucide-react';
 import { adminRequest, getPageContent, uploadAdminImage } from '../../utils/api';
-import { HOME_DEFAULTS } from '../../content/homeDefaults';
-import { HOME_SECTIONS, emptyItem } from '../../content/homeSchema';
-import { mergeContent } from '../../content/siteContent';
+import { emptyItem } from '../../content/schemaFields';
+import { PAGE_DEFAULTS, mergeContent } from '../../content/siteContent';
 import { resolveImage } from '../../content/assets';
 import { SECTOR_ICONS } from '../../content/icons';
+import { CONTENT_PAGES } from './constants';
 import { PageHeader, iconButton, inputClass, labelClass, primaryButton, secondaryButton } from './ui';
 
 function TextField({ field, value, onChange, multiline }) {
@@ -169,7 +169,7 @@ function Field({ field, value, onChange }) {
 }
 
 // Remounted per section (see default export) so drafts never leak between sections.
-function Editor({ section }) {
+function Editor({ page, section }) {
   const [saved, setSaved] = useState(null);
   const [draft, setDraft] = useState(null);
   const [error, setError] = useState('');
@@ -178,10 +178,10 @@ function Editor({ section }) {
 
   useEffect(() => {
     let active = true;
-    getPageContent('home')
+    getPageContent(page.key)
       .then((res) => {
         if (!active) return;
-        const data = mergeContent(HOME_DEFAULTS[section.key], res.sections?.[section.key]);
+        const data = mergeContent(PAGE_DEFAULTS[page.key][section.key], res.sections?.[section.key]);
         setSaved(data);
         setDraft(data);
       })
@@ -189,9 +189,11 @@ function Editor({ section }) {
     return () => {
       active = false;
     };
-  }, [section.key]);
+  }, [page.key, section.key]);
 
   const dirty = Boolean(saved) && JSON.stringify(saved) !== JSON.stringify(draft);
+  // Other pages that show this section too (e.g. the About page reuses Home's "First Edition"), so edits change them as well.
+  const sharedOn = CONTENT_PAGES.filter((p) => p.shared?.some((s) => s.page === page.key && s.section === section.key)).map((p) => p.title);
 
   useEffect(() => {
     if (!dirty) return undefined;
@@ -205,8 +207,8 @@ function Editor({ section }) {
     setError('');
     setNotice('');
     try {
-      const { data } = await adminRequest(`/content/home/${section.key}`, { method: 'PUT', body: { data: draft } });
-      const merged = mergeContent(HOME_DEFAULTS[section.key], data);
+      const { data } = await adminRequest(`/content/${page.key}/${section.key}`, { method: 'PUT', body: { data: draft } });
+      const merged = mergeContent(PAGE_DEFAULTS[page.key][section.key], data);
       setSaved(merged);
       setDraft(merged);
       setNotice('Saved. The website is updated.');
@@ -221,9 +223,9 @@ function Editor({ section }) {
     <div className="max-w-3xl pb-24">
       <PageHeader
         title={section.title}
-        subtitle="Home page"
+        subtitle={sharedOn.length ? `${page.title} · also shown on the ${sharedOn.join(' and ')}` : page.title}
         actions={
-          <a href="/" target="_blank" rel="noreferrer" className={secondaryButton}>
+          <a href={page.path} target="_blank" rel="noreferrer" className={secondaryButton}>
             <ExternalLink size={15} />
             View website
           </a>
@@ -270,9 +272,11 @@ function Editor({ section }) {
   );
 }
 
-export default function HomeSectionEditor() {
+// Editor for one section of a website page; `pageKey` is a CONTENT_PAGES key.
+export default function PageSectionEditor({ pageKey }) {
   const { section: key } = useParams();
-  const section = HOME_SECTIONS.find((s) => s.key === key);
-  if (!section) return <Navigate to={`/admin/home/${HOME_SECTIONS[0].key}`} replace />;
-  return <Editor key={section.key} section={section} />;
+  const page = CONTENT_PAGES.find((p) => p.key === pageKey);
+  const section = page.sections.find((s) => s.key === key);
+  if (!section) return <Navigate to={`/admin/${page.key}/${page.sections[0].key}`} replace />;
+  return <Editor key={`${page.key}/${section.key}`} page={page} section={section} />;
 }

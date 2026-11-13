@@ -1,16 +1,17 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import heroBg from '../../assets/hero/heros-3.jpg';
+import { useAboutSection, useLocalized } from '../../content/siteContent';
+import { resolveImage } from '../../content/assets';
 
 export default function AboutHero() {
-  const { t } = useTranslation();
+  const c = useAboutSection('hero');
+  const tx = useLocalized();
 
   return (
     <section className="relative w-full overflow-hidden bg-[#370C01] py-16 sm:py-20 md:py-24 flex items-center justify-center">
       {/* Background Image */}
       <img
-        src={heroBg}
-        alt="About Bihar Setu"
+        src={resolveImage(c.image)}
+        alt={tx(c.imageAlt)}
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
 
@@ -21,10 +22,9 @@ export default function AboutHero() {
       {/* Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         <h1 className="font-serif text-white text-3xl sm:text-4xl md:text-5xl font-normal tracking-wider uppercase drop-shadow-lg">
-          {t('aboutPage.heroTitle')}
+          {tx(c.title)}
         </h1>
       </div>
     </section>
   );
 }
-

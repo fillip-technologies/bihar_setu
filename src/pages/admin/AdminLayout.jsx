@@ -1,16 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, ExternalLink, House, Inbox, ListChecks, LogOut, Menu, X } from 'lucide-react';
+import { ChevronDown, ExternalLink, House, Inbox, Info, ListChecks, LogOut, Menu, X } from 'lucide-react';
 import logo from '../../assets/bihar-setu-logo-white-cropped.png';
 import { adminRequest, adminToken } from '../../utils/api';
-import { HOME_SECTIONS } from '../../content/homeSchema';
+import { CONTENT_PAGES } from './constants';
+
+const PAGE_ICONS = { home: House, about: Info };
 
 export default function AdminLayout() {
   const navigate = useNavigate();
   const [forms, setForms] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const { pathname } = useLocation();
-  const [homeOpen, setHomeOpen] = useState(pathname.startsWith('/admin/home/'));
+  // Website pages whose section list is expanded; starts with the page being edited.
+  const [openPages, setOpenPages] = useState(() => CONTENT_PAGES.filter((p) => pathname.startsWith(`/admin/${p.key}/`)).map((p) => p.key));
+  const togglePage = (key) => setOpenPages((open) => (open.includes(key) ? open.filter((k) => k !== key) : [...open, key]));
   const hasToken = Boolean(adminToken.get());
 
   // Sidebar form list with submission counts; child pages call this after changes.
@@ -34,6 +38,11 @@ export default function AdminLayout() {
   const navClass = ({ isActive }) =>
     `flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13.5px] font-semibold transition-colors ${
       isActive ? 'bg-white/12 text-white' : 'text-white/65 hover:bg-white/8 hover:text-white'
+    }`;
+
+  const sectionLinkClass = ({ isActive }) =>
+    `block rounded-md px-2.5 py-1.5 text-[13px] transition-colors ${
+      isActive ? 'bg-white/12 font-semibold text-white' : 'text-white/60 hover:bg-white/8 hover:text-white'
     }`;
 
   return (
@@ -71,37 +80,55 @@ export default function AdminLayout() {
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3 space-y-5" aria-label="Admin sections">
-          {/* Website content: Home page sections */}
+          {/* Website content: each page's sections */}
           <div>
             <p className="px-3 pb-1.5 text-[10.5px] font-bold uppercase tracking-widest text-white/40">Website</p>
-            <button
-              type="button"
-              onClick={() => setHomeOpen((o) => !o)}
-              aria-expanded={homeOpen}
-              className={`${navClass({ isActive: false })} w-full cursor-pointer`}
-            >
-              <House size={16} className="shrink-0" />
-              <span className="flex-1 text-left">Home page</span>
-              <ChevronDown size={15} className={`transition-transform ${homeOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {homeOpen && (
-              <div className="ml-5 mt-0.5 space-y-0.5 border-l border-white/10 pl-2">
-                {HOME_SECTIONS.map((s) => (
-                  <NavLink
-                    key={s.key}
-                    to={`/admin/home/${s.key}`}
-                    onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      `block rounded-md px-2.5 py-1.5 text-[13px] transition-colors ${
-                        isActive ? 'bg-white/12 font-semibold text-white' : 'text-white/60 hover:bg-white/8 hover:text-white'
-                      }`
-                    }
-                  >
-                    {s.title}
-                  </NavLink>
-                ))}
-              </div>
-            )}
+            <div className="space-y-0.5">
+              {CONTENT_PAGES.map((page) => {
+                const Icon = PAGE_ICONS[page.key] ?? House;
+                const open = openPages.includes(page.key);
+                return (
+                  <div key={page.key}>
+                    <button
+                      type="button"
+                      onClick={() => togglePage(page.key)}
+                      aria-expanded={open}
+                      className={`${navClass({ isActive: false })} w-full cursor-pointer`}
+                    >
+                      <Icon size={16} className="shrink-0" />
+                      <span className="flex-1 text-left">{page.title}</span>
+                      <ChevronDown size={15} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+                    </button>
+                    {open && (
+                      <div className="ml-5 mt-0.5 space-y-0.5 border-l border-white/10 pl-2">
+                        {page.sections.map((s) => (
+                          <NavLink key={s.key} to={`/admin/${page.key}/${s.key}`} onClick={() => setMenuOpen(false)} className={sectionLinkClass}>
+                            {s.title}
+                          </NavLink>
+                        ))}
+                        {page.shared?.length > 0 && (
+                          <>
+                            <p className="px-2.5 pt-2 pb-0.5 text-[10.5px] text-white/40">
+                              Shared with the {CONTENT_PAGES.find((p) => p.key === page.shared[0].page)?.title}:
+                            </p>
+                            {page.shared.map((s) => (
+                              <NavLink
+                                key={`${s.page}/${s.section}`}
+                                to={`/admin/${s.page}/${s.section}`}
+                                onClick={() => setMenuOpen(false)}
+                                className={sectionLinkClass}
+                              >
+                                {s.title}
+                              </NavLink>
+                            ))}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {forms.map((form) => (
