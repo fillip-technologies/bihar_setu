@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { ExternalLink, ImagePlus, Loader2, Plus, Trash2 } from 'lucide-react';
 import { adminRequest, getPageContent, uploadAdminImage } from '../../utils/api';
 import { emptyItem } from '../../content/schemaFields';
 import { PAGE_DEFAULTS, mergeContent } from '../../content/siteContent';
 import { resolveImage } from '../../content/assets';
-import { SECTOR_ICONS } from '../../content/icons';
-import { CONTENT_PAGES } from './constants';
+import { CONTENT_ICONS } from '../../content/icons';
+import { CONTENT_PAGES, contentPath } from './constants';
 import { PageHeader, iconButton, inputClass, labelClass, primaryButton, secondaryButton } from './ui';
 
 function TextField({ field, value, onChange, multiline }) {
@@ -114,8 +114,39 @@ function ListField({ field, value, onChange }) {
   );
 }
 
+// The whole section being edited, for fields that list items of another list in it (checklist).
+const DraftContext = createContext({});
+
+function ChecklistField({ field, value, onChange }) {
+  const options = (useContext(DraftContext)[field.from] ?? []).filter((o) => o?.id);
+  const ticked = Array.isArray(value) ? value : [];
+  const toggle = (id) => onChange(ticked.includes(id) ? ticked.filter((v) => v !== id) : [...ticked, id]);
+
+  return (
+    <fieldset>
+      <legend className={labelClass}>{field.label}</legend>
+      {options.length ? (
+        <div className="flex flex-wrap gap-x-5 gap-y-2">
+          {options.map((o, i) => (
+            <label key={o.id} className="inline-flex items-center gap-2 text-sm text-[#4A3831] cursor-pointer">
+              <input type="checkbox" checked={ticked.includes(o.id)} onChange={() => toggle(o.id)} className="h-4 w-4 accent-[#D6A33A]" />
+              {o.name?.en || o.name?.hi || `Item ${i + 1}`}
+            </label>
+          ))}
+        </div>
+      ) : (
+        <p className="text-[11px] text-[#8A7972]">Nothing to choose from yet.</p>
+      )}
+    </fieldset>
+  );
+}
+
 function Field({ field, value, onChange }) {
   switch (field.type) {
+    case 'id':
+      return null;
+    case 'checklist':
+      return <ChecklistField field={field} value={value} onChange={onChange} />;
     case 'text':
       return <TextField field={field} value={value} onChange={onChange} />;
     case 'textarea':
@@ -125,7 +156,7 @@ function Field({ field, value, onChange }) {
     case 'list':
       return <ListField field={field} value={value} onChange={onChange} />;
     case 'icon': {
-      const Icon = SECTOR_ICONS[value];
+      const Icon = CONTENT_ICONS[value];
       return (
         <div>
           <p className={labelClass}>{field.label}</p>
@@ -193,7 +224,7 @@ function Editor({ page, section }) {
 
   const dirty = Boolean(saved) && JSON.stringify(saved) !== JSON.stringify(draft);
   // Other pages that show this section too (e.g. the About page reuses Home's "First Edition"), so edits change them as well.
-  const sharedOn = CONTENT_PAGES.filter((p) => p.shared?.some((s) => s.page === page.key && s.section === section.key)).map((p) => p.title);
+  const sharedOn = CONTENT_PAGES.filter((p) => p.shared?.some((s) => s.page === page.key && s.section === section.key)).map((p) => p.name);
 
   useEffect(() => {
     if (!dirty) return undefined;
@@ -223,7 +254,11 @@ function Editor({ page, section }) {
     <div className="max-w-3xl pb-24">
       <PageHeader
         title={section.title}
-        subtitle={sharedOn.length ? `${page.title} · also shown on the ${sharedOn.join(' and ')}` : page.title}
+        subtitle={
+          sharedOn.length
+            ? `${page.title} · also shown on the ${new Intl.ListFormat('en').format(sharedOn)} page${sharedOn.length > 1 ? 's' : ''}`
+            : page.title
+        }
         actions={
           <a href={page.path} target="_blank" rel="noreferrer" className={secondaryButton}>
             <ExternalLink size={15} />
@@ -242,19 +277,21 @@ function Editor({ page, section }) {
           </div>
         )
       ) : (
-        <div className="space-y-6 rounded-xl border border-[#EFE5D7] bg-white p-5 sm:p-6">
-          {section.fields.map((field) => (
-            <Field
-              key={field.key}
-              field={field}
-              value={draft[field.key]}
-              onChange={(v) => {
-                setDraft((d) => ({ ...d, [field.key]: v }));
-                setNotice('');
-              }}
-            />
-          ))}
-        </div>
+        <DraftContext.Provider value={draft}>
+          <div className="space-y-6 rounded-xl border border-[#EFE5D7] bg-white p-5 sm:p-6">
+            {section.fields.map((field) => (
+              <Field
+                key={field.key}
+                field={field}
+                value={draft[field.key]}
+                onChange={(v) => {
+                  setDraft((d) => ({ ...d, [field.key]: v }));
+                  setNotice('');
+                }}
+              />
+            ))}
+          </div>
+        </DraftContext.Provider>
       )}
 
       {draft && (
@@ -272,11 +309,12 @@ function Editor({ page, section }) {
   );
 }
 
-// Editor for one section of a website page; `pageKey` is a CONTENT_PAGES key.
-export default function PageSectionEditor({ pageKey }) {
-  const { section: key } = useParams();
-  const page = CONTENT_PAGES.find((p) => p.key === pageKey);
-  const section = page.sections.find((s) => s.key === key);
-  if (!section) return <Navigate to={`/admin/${page.key}/${page.sections[0].key}`} replace />;
+// Editor for one section of a website page, at /admin/pages/<page>/<section>.
+export default function PageSectionEditor() {
+  const params = useParams();
+  const page = CONTENT_PAGES.find((p) => p.key === params.page);
+  if (!page) return <Navigate to="/admin" replace />;
+  const section = page.sections.find((s) => s.key === params.section);
+  if (!section) return <Navigate to={contentPath(page.key, page.sections[0].key)} replace />;
   return <Editor key={`${page.key}/${section.key}`} page={page} section={section} />;
 }

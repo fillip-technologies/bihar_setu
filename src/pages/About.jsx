@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AboutHero from '../components/about/AboutHero';
+import PageHero from '../shared/PageHero';
 import AboutEdition from '../components/home/AboutEdition';
 import AboutPlatform from '../components/about/AboutPlatform';
 import TransformingBihar from '../components/about/TransformingBihar';
@@ -14,7 +14,7 @@ export default function About() {
   return (
     <div className="flex flex-col w-full">
       {/* 1. Page Hero Banner with 'ABOUT BIHAR SETU' */}
-      <AboutHero />
+      <PageHero page="about" />
 
       {/* 2. The First Edition, in Patna (Reused from Home) */}
       <AboutEdition />

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PartnersHero from '../components/partners/PartnersHero';
+import PageHero from '../shared/PageHero';
 import PartnersShowcase from '../components/partners/PartnersShowcase';
 import GetInTouch from '../components/home/GetInTouch';
 
@@ -12,7 +12,7 @@ export default function Partners() {
   return (
     <div className="flex flex-col w-full">
       {/* 1. Page Hero Banner with 'PARTNERS 2026' */}
-      <PartnersHero />
+      <PageHero page="partners" />
 
       {/* 2. Official Partners & Organizers Showcase */}
       <PartnersShowcase />

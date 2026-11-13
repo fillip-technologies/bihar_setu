@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { useHomeSection, useLocalized } from '../../content/siteContent';
-import { SECTOR_ICONS } from '../../content/icons';
+import { CONTENT_ICONS } from '../../content/icons';
 
 export default function SectorsRepresented() {
   const c = useHomeSection('sectors');
@@ -22,7 +22,7 @@ export default function SectorsRepresented() {
         {/* 12 Sectors Grid: 6 columns on lg, 3 on md, 2 on sm */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 sm:gap-x-8 gap-y-10 sm:gap-y-12">
           {sectors.map((sector, idx) => {
-            const Icon = SECTOR_ICONS[sector.icon] || Sparkles;
+            const Icon = CONTENT_ICONS[sector.icon] || Sparkles;
             return (
               <div
                 key={idx}

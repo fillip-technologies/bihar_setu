@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAboutSection, useLocalized } from '../../content/siteContent';
+import { useLocalized, usePageSection } from '../../content/siteContent';
 
 export default function TransformingBihar() {
-  const c = useAboutSection('transform');
+  const c = usePageSection('about', 'transform');
   const tx = useLocalized();
 
   return (

@@ -4,12 +4,15 @@ import { CheckCircle2, Loader2 } from 'lucide-react';
 import DynamicFormFields, { FormLoadError, FormSkeleton } from '../../shared/DynamicFormFields';
 import { submitForm } from '../../utils/api';
 import { initialValues, useFormDefinition } from '../../utils/formSchema';
+import { useLocalized, usePageSection } from '../../content/siteContent';
 
 const FORM_KEY = 'enquire';
 
 export default function EnquireForm() {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const lang = i18n.language || 'en';
+  const c = usePageSection('enquire', 'form');
+  const tx = useLocalized();
   const { fields, status, error: loadError, reload } = useFormDefinition(FORM_KEY);
 
   // Only the fields the visitor changed; everything else comes from the field defaults.
@@ -49,34 +52,34 @@ export default function EnquireForm() {
   };
 
   const emailField = fields.find((f) => f.type === 'email');
-  const replyTo = (emailField && result?.data[emailField.key]) || 'your email';
+  const replyTo = (emailField && result?.data[emailField.key]) || tx(c.emailFallback);
 
   return (
     <section className="bg-white py-14 sm:py-18 lg:py-20 px-4 sm:px-6 lg:px-8 w-full">
       <div className="max-w-4xl mx-auto">
         {/* Section Heading */}
         <h2 className="font-serif text-[#1F0E0A] text-2xl sm:text-3xl lg:text-[34px] font-normal tracking-tight mb-8">
-          {t('enquirePage.formHeading')}
+          {tx(c.heading)}
         </h2>
 
         {result ? (
           <div className="bg-[#FAF5EB] border border-[#E8DEC8] rounded-xl p-8 text-center space-y-3">
             <CheckCircle2 size={40} className="mx-auto text-[#96681E]" />
             <h3 className="text-lg font-semibold text-[#1F0E0A]">
-              {t('enquirePage.successMsg')}
+              {tx(c.successTitle)}
             </h3>
             <p className="text-xs sm:text-sm text-[#6B5A52]">
-              Our team will review your enquiry and get back to you shortly at {replyTo}.
+              {tx(c.successMessage).replace('{email}', () => replyTo)}
             </p>
             <p className="text-xs text-[#8A7972]">
-              Reference: <span className="font-mono font-bold text-[#651B12]">{result.referenceId}</span>
+              {tx(c.refLabel)}: <span className="font-mono font-bold text-[#651B12]">{result.referenceId}</span>
             </p>
             <button
               type="button"
               onClick={resetForm}
               className="mt-4 px-6 py-2 bg-[#D6A33A] text-[#1E0904] font-bold text-xs uppercase rounded-full cursor-pointer"
             >
-              Submit Another Enquiry
+              {tx(c.submitAnotherLabel)}
             </button>
           </div>
         ) : status === 'loading' ? (
@@ -110,7 +113,7 @@ export default function EnquireForm() {
                 className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-[#D6A33A] hover:bg-[#C28F27] text-[#1E0904] font-bold text-xs uppercase tracking-wider rounded-full shadow-md transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-60 disabled:cursor-wait"
               >
                 {submitting && <Loader2 size={15} className="animate-spin" />}
-                {t('enquirePage.submitBtn')}
+                {tx(c.submitLabel)}
               </button>
             </div>
           </form>

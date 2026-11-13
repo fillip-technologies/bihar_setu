@@ -1,6 +1,6 @@
 // What the admin panel shows for each Home page section, in page order (field types are listed in schemaFields.js).
-import { CONTACT_TYPES, SECTOR_ICONS, SOCIAL_PLATFORMS } from './icons';
-import { image, link, list, string, text, textarea } from './schemaFields';
+import { CONTACT_TYPES, SOCIAL_PLATFORMS } from './icons';
+import { icon, image, link, list, string, text, textarea } from './schemaFields';
 
 export const HOME_SECTIONS = [
   {
@@ -106,7 +106,7 @@ export const HOME_SECTIONS = [
     fields: [
       text('heading', 'Heading'),
       list('sectors', 'Sectors', 'Sector', [
-        { key: 'icon', label: 'Icon', type: 'icon', options: Object.keys(SECTOR_ICONS) },
+        icon('icon', 'Icon'),
         text('label', 'Name'),
       ]),
     ],

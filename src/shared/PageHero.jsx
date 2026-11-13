@@ -1,9 +1,10 @@
 import React from 'react';
-import { useAboutSection, useLocalized } from '../../content/siteContent';
-import { resolveImage } from '../../content/assets';
+import { useLocalized, usePageSection } from '../content/siteContent';
+import { resolveImage } from '../content/assets';
 
-export default function AboutHero() {
-  const c = useAboutSection('hero');
+// Title banner at the top of the inner pages (About, Agenda, Speakers, ...), edited as each page's "hero" section.
+export default function PageHero({ page }) {
+  const c = usePageSection(page, 'hero');
   const tx = useLocalized();
 
   return (

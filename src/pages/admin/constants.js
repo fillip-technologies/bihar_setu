@@ -1,24 +1,35 @@
 import { HOME_SECTIONS } from '../../content/homeSchema';
 import { ABOUT_SECTIONS } from '../../content/aboutSchema';
+import { AGENDA_SECTIONS } from '../../content/agendaSchema';
+import { SPEAKERS_SECTIONS } from '../../content/speakersSchema';
+import { PARTNERS_SECTIONS } from '../../content/partnersSchema';
+import { GET_INVOLVED_SECTIONS } from '../../content/getInvolvedSchema';
+import { ENQUIRE_SECTIONS } from '../../content/enquireSchema';
 
 // Where each form lives on the public website.
 export const PUBLIC_PATHS = { agenda: '/agenda#register-form', enquire: '/enquire' };
 
-// Website pages with editable content. Each has an editor at /admin/<key>/<section>.
+const GET_IN_TOUCH = { page: 'home', section: 'contact', title: 'Get in Touch' };
+
+// Website pages with editable content. Each has an editor at /admin/pages/<key>/<section>.
 // `shared` lists sections a page shows from another page: they are edited there and only linked from here.
 export const CONTENT_PAGES = [
-  { key: 'home', title: 'Home page', path: '/', sections: HOME_SECTIONS },
+  { key: 'home', name: 'Home', path: '/', sections: HOME_SECTIONS },
   {
     key: 'about',
-    title: 'About page',
+    name: 'About',
     path: '/about',
     sections: ABOUT_SECTIONS,
-    shared: [
-      { page: 'home', section: 'about', title: 'First Edition' },
-      { page: 'home', section: 'contact', title: 'Get in Touch' },
-    ],
+    shared: [{ page: 'home', section: 'about', title: 'First Edition' }, GET_IN_TOUCH],
   },
-];
+  { key: 'agenda', name: 'Agenda', path: '/agenda', sections: AGENDA_SECTIONS, shared: [GET_IN_TOUCH] },
+  { key: 'speakers', name: 'Speakers', path: '/speakers', sections: SPEAKERS_SECTIONS, shared: [GET_IN_TOUCH] },
+  { key: 'partners', name: 'Partners', path: '/partners', sections: PARTNERS_SECTIONS, shared: [GET_IN_TOUCH] },
+  { key: 'getInvolved', name: 'Get Involved', path: '/get-involved', sections: GET_INVOLVED_SECTIONS, shared: [GET_IN_TOUCH] },
+  { key: 'enquire', name: 'Enquire', path: '/enquire', sections: ENQUIRE_SECTIONS, shared: [GET_IN_TOUCH] },
+].map((p) => ({ ...p, title: `${p.name} page` }));
+
+export const contentPath = (page, section) => `/admin/pages/${page}/${section}`;
 
 export const FIELD_TYPES = [
   { value: 'text', label: 'Short text' },

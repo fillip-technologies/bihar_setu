@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import EnquireHero from '../components/enquire/EnquireHero';
+import PageHero from '../shared/PageHero';
 import EnquireForm from '../components/enquire/EnquireForm';
 import GetInTouch from '../components/home/GetInTouch';
 
@@ -12,7 +12,7 @@ export default function Enquire() {
   return (
     <div className="flex flex-col w-full">
       {/* 1. Page Hero Banner with 'ENQUIRE NOW' */}
-      <EnquireHero />
+      <PageHero page="enquire" />
 
       {/* 2. Structured Enquiry Form with all 38 Districts & 11 Categories */}
       <EnquireForm />

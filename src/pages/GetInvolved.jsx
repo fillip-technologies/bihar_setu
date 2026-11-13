@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import GetInvolvedHero from '../components/getInvolved/GetInvolvedHero';
+import PageHero from '../shared/PageHero';
 import PassPricingTable from '../components/getInvolved/PassPricingTable';
 import GetInTouch from '../components/home/GetInTouch';
 
@@ -12,7 +12,7 @@ export default function GetInvolved() {
   return (
     <div className="flex flex-col w-full">
       {/* 1. Page Hero Banner with 'GET YOUR PASS' */}
-      <GetInvolvedHero />
+      <PageHero page="getInvolved" />
 
       {/* 2. Pass Pricing & Feature Comparison Table */}
       <PassPricingTable />

@@ -2,12 +2,25 @@ import { createContext, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HOME_DEFAULTS } from './homeDefaults';
 import { ABOUT_DEFAULTS } from './aboutDefaults';
+import { AGENDA_DEFAULTS } from './agendaDefaults';
+import { SPEAKERS_DEFAULTS } from './speakersDefaults';
+import { PARTNERS_DEFAULTS } from './partnersDefaults';
+import { GET_INVOLVED_DEFAULTS } from './getInvolvedDefaults';
+import { ENQUIRE_DEFAULTS } from './enquireDefaults';
 
-// Built-in content of every editable page. SiteContentProvider loads the saved content of each of these pages.
-export const PAGE_DEFAULTS = { home: HOME_DEFAULTS, about: ABOUT_DEFAULTS };
+// Built-in content of every editable page, keyed like the server's PAGE_SECTIONS.
+export const PAGE_DEFAULTS = {
+  home: HOME_DEFAULTS,
+  about: ABOUT_DEFAULTS,
+  agenda: AGENDA_DEFAULTS,
+  speakers: SPEAKERS_DEFAULTS,
+  partners: PARTNERS_DEFAULTS,
+  getInvolved: GET_INVOLVED_DEFAULTS,
+  enquire: ENQUIRE_DEFAULTS,
+};
 
-// Saved sections from the admin panel, keyed by page: { home: { hero: {...}, ... }, about: { ... } }.
-export const SiteContentContext = createContext({ home: {}, about: {} });
+// Saved sections from the admin panel, keyed by page: { home: { hero: {...}, ... }, about: { ... }, ... }.
+export const SiteContentContext = createContext({});
 
 const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
@@ -28,7 +41,6 @@ export function usePageSection(page, key) {
 }
 
 export const useHomeSection = (key) => usePageSection('home', key);
-export const useAboutSection = (key) => usePageSection('about', key);
 
 // Picks the current language from a { en, hi } text, falling back to English.
 export function useLocalized() {
