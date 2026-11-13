@@ -26,7 +26,7 @@ export default function GetInTouch() {
           {contacts.map((contact, idx) => (
             <div
               key={idx}
-              className="bg-[#521810] rounded-lg sm:rounded-xl p-5 sm:p-6 flex flex-col justify-between min-h-[145px] shadow-md hover:bg-[#5E1B12] transition-colors duration-200"
+              className="bg-[#052E67] rounded-lg sm:rounded-xl p-5 sm:p-6 flex flex-col justify-between min-h-[145px] shadow-md hover:bg-[#07387B] transition-colors duration-200"
             >
               {/* Card Title */}
               <h3 className="text-white text-sm sm:text-base font-normal sm:font-medium leading-snug">

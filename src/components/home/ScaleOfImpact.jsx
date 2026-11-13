@@ -25,7 +25,7 @@ export default function ScaleOfImpact() {
                 className="relative flex flex-col items-center justify-center px-4 py-1"
               >
                 {/* Large Serif Number with Clear Lining 1,600 Styling */}
-                <span className="font-['Lora',serif] text-4xl sm:text-5xl md:text-6xl text-[#651B12] font-semibold tracking-tight leading-none [font-variant-numeric:lining-nums]">
+                <span className="font-['Lora',serif] text-4xl sm:text-5xl md:text-6xl text-[#D6A33A] font-semibold tracking-tight leading-none [font-variant-numeric:lining-nums]">
                   {tx(stat.value)}
                 </span>
 

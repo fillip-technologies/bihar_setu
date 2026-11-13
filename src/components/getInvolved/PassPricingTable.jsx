@@ -46,17 +46,17 @@ export default function PassPricingTable() {
           <table className="w-full text-left border-collapse min-w-[620px]">
             {/* Table Header */}
             <thead>
-              <tr className="bg-[#651B12] text-white">
+              <tr className="bg-[#052E67] text-white">
                 <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4">
                   {t('getInvolvedPage.colFeature')}
                 </th>
-                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#8C4A42]">
+                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#0E448B]">
                   {t('getInvolvedPage.colConference')}
                 </th>
-                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#8C4A42]">
+                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#0E448B]">
                   {t('getInvolvedPage.colStudent')}
                 </th>
-                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#8C4A42]">
+                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#0E448B]">
                   {t('getInvolvedPage.colExpo')}
                 </th>
               </tr>

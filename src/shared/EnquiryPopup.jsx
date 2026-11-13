@@ -16,7 +16,7 @@ export default function EnquiryPopup() {
     <div className="fixed right-4 sm:right-6 bottom-6 z-40">
       <Link
         to="/enquire"
-        className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-[#651B12] hover:bg-[#7D2217] text-white shadow-2xl border-2 border-[#D6A33A] cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 group"
+        className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-[#052E67] hover:bg-[#07387B] text-white shadow-2xl border-2 border-[#D6A33A] cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 group"
         title="Enquire Now"
       >
         <div className="relative">

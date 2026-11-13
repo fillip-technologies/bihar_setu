@@ -21,7 +21,7 @@ export default function Hero() {
   }, [slides.length]);
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#2D0B02] min-h-[380px] md:min-h-[440px] flex flex-col justify-center text-center">
+    <section className="relative w-full overflow-hidden bg-[#0A0503] min-h-[380px] md:min-h-[440px] flex flex-col justify-center text-center">
       {/* Background Images with Smooth Crossfade Transition */}
       {slides.map((imgSrc, idx) => (
         <div
@@ -33,56 +33,41 @@ export default function Hero() {
         />
       ))}
 
-      {/* Signature Brand Color Tint: A thin translucent royal mahogany wash that tints the image while keeping all details crisp */}
-      <div className="absolute inset-0 bg-[#450F07]/50 mix-blend-multiply" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#370C01]/60 via-[#521810]/40 to-[#370C01]/70" />
+      {/* Clean Dark Overlay: Keeps image fully visible while guaranteeing natural text legibility */}
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/60 pointer-events-none" />
 
       {/* Content Container with Proportional Vertical Padding */}
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 flex flex-col items-center">
         {/* Eyebrow Venue & Date Header */}
-        <span 
-          className="text-[11px] sm:text-xs font-bold text-[#E5A93C] tracking-widest uppercase mb-2 sm:mb-2.5"
-          style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.95)' }}
-        >
+        <span className="text-[11px] sm:text-xs font-bold text-[#F7C568] tracking-widest uppercase mb-2 sm:mb-2.5">
           {tx(c.venue)}
         </span>
 
         {/* Main Heading */}
-        <h1 
-          className="text-3xl sm:text-4xl md:text-5xl font-serif text-white tracking-tight leading-tight"
-          style={{ textShadow: '0 3px 12px rgba(0, 0, 0, 0.95), 0 1px 3px rgba(0, 0, 0, 0.9)' }}
-        >
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-white tracking-tight leading-tight">
           <span className="block font-medium">{tx(c.titleLine1)}</span>
-          <span className="block font-serif">{tx(c.titleLine2)}</span>
+          <span className="block font-serif text-[#F7C568] font-bold mt-0.5">{tx(c.titleLine2)}</span>
         </h1>
 
         {/* Subheading in Gold */}
-        <p 
-          className="mt-2 text-base sm:text-lg md:text-xl text-[#E5A93C] font-serif italic tracking-wide font-normal"
-          style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.95)' }}
-        >
+        <p className="mt-2 text-base sm:text-lg md:text-xl text-[#F7C568] font-serif italic tracking-wide font-normal">
           {tx(c.subheading)}
         </p>
 
         {/* Description Paragraph */}
-        <p 
-          className="mt-2.5 text-xs sm:text-[13px] md:text-sm text-[#F0EAE1] max-w-xl font-normal leading-relaxed"
-          style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.9)' }}
-        >
+        <p className="mt-2.5 text-xs sm:text-[13px] md:text-sm text-[#F5EFE6] max-w-xl font-normal leading-relaxed">
           {tx(c.description)}
         </p>
 
         {/* Event Meta Details: Date & Location */}
-        <div 
-          className="mt-4 flex flex-wrap items-center justify-center gap-5 text-xs text-white font-medium"
-          style={{ textShadow: '0 2px 6px rgba(0, 0, 0, 0.9)' }}
-        >
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-5 text-xs text-white font-medium">
           <div className="flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-[#E5A93C]" />
+            <Calendar className="w-3.5 h-3.5 text-[#F7C568]" />
             <span>{tx(c.dates)}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <MapPin className="w-3.5 h-3.5 text-[#E5A93C]" />
+            <MapPin className="w-3.5 h-3.5 text-[#F7C568]" />
             <span>{tx(c.location)}</span>
           </div>
         </div>
@@ -91,23 +76,20 @@ export default function Hero() {
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3.5">
           <CmsLink
             to={c.primaryLink}
-            className="inline-flex items-center justify-center bg-[#CB9010] hover:bg-[#B8800B] text-[#370C01] font-bold text-xs tracking-wider uppercase px-6 sm:px-7 py-2.5 rounded-full shadow-md shadow-black/30 transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center justify-center bg-[#D6A33A] hover:bg-[#C28F27] text-[#1E0904] font-bold text-xs tracking-wider uppercase px-6 sm:px-7 py-2.5 rounded-full shadow-md transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
           >
             {tx(c.primaryLabel)}
           </CmsLink>
           <CmsLink
             to={c.secondaryLink}
-            className="inline-flex items-center justify-center border border-[#CB9010] hover:bg-[#CB9010]/15 text-[#CB9010] hover:text-[#E5A93C] font-bold text-xs tracking-wider uppercase px-6 sm:px-7 py-2.5 rounded-full transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center justify-center border-2 border-[#D6A33A] hover:bg-[#D6A33A] text-[#D6A33A] hover:text-[#1E0904] font-bold text-xs tracking-wider uppercase px-6 sm:px-7 py-2.5 rounded-full transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap"
           >
             {tx(c.secondaryLabel)}
           </CmsLink>
         </div>
 
         {/* Organised by footer text */}
-        <p 
-          className="mt-4 sm:mt-5 text-[10px] sm:text-[11px] text-[#D6C5B3] font-medium tracking-wide"
-          style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.95)' }}
-        >
+        <p className="mt-4 sm:mt-5 text-[10px] sm:text-[11px] text-white/80 font-medium tracking-wide">
           {tx(c.organizedBy)}
         </p>
 
@@ -123,8 +105,8 @@ export default function Hero() {
                 aria-label={`Slide ${idx + 1}`}
                 className={`transition-all duration-300 cursor-pointer ${
                   isActive
-                    ? 'w-6 h-1.5 rounded-full bg-[#CB9010] shadow-xs'
-                    : 'w-1.5 h-1.5 rounded-full border border-[#CB9010]/70 hover:bg-[#CB9010]/30'
+                    ? 'w-6 h-1.5 rounded-full bg-[#D6A33A] shadow-xs'
+                    : 'w-1.5 h-1.5 rounded-full bg-white/50 hover:bg-white'
                 }`}
               />
             );
