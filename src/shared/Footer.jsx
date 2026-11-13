@@ -4,6 +4,8 @@ import { safeHref, useHomeSection, useLocalized } from '../content/siteContent';
 import { resolveImage } from '../content/assets';
 import { SOCIAL_PLATFORMS } from '../content/icons';
 import CmsLink from '../content/CmsLink';
+import navbarLogoDark from '../assets/bihar-setu-navbar-logo-dark.png';
+import logo404Dark from '../assets/404-experiences-logo-dark.png';
 
 // lucide-react has no brand icons, so these are drawn here in the same stroke style.
 function StrokeIcon({ size = 16, className = '', children }) {
@@ -126,23 +128,37 @@ export default function Footer() {
   const socialLinks = listOf(f.socialLinks).filter((s) => trimmed(s.link));
   const legalLinks = listOf(f.legalLinks).filter((l) => tx(l.label));
   const quickLinks = listOf(f.quickLinks).filter((l) => tx(l.label));
-  const partnerLogos = listOf(f.partnerLogos).filter((p) => resolveImage(p.image));
+  const partnerLogos = listOf(f.partnerLogos)
+    .map((p) => {
+      let img = resolveImage(p.image);
+      if (p.name === '404 Experiences' || (typeof img === 'string' && img.includes('404-experiences-logo-light'))) {
+        img = logo404Dark;
+      }
+      return { ...p, image: img };
+    })
+    .filter((p) => p.image);
   const contacts = listOf(f.contacts).filter((c) => trimmed(c.value));
-  const logoSrc = resolveImage(f.logo);
-  const organiserLogoSrc = resolveImage(f.organiserLogo);
+  const rawLogo = resolveImage(f.logo);
+  const logoSrc = (rawLogo && !rawLogo.includes('white') && !rawLogo.includes('navbar-logo-DFoosasL'))
+    ? rawLogo
+    : navbarLogoDark;
+  const rawOrganiserLogo = resolveImage(f.organiserLogo);
+  const organiserLogoSrc = (rawOrganiserLogo && !rawOrganiserLogo.includes('light'))
+    ? rawOrganiserLogo
+    : logo404Dark;
 
   return (
-    <footer className="bg-[#521810] text-white border-t border-[#3B0E07] w-full">
+    <footer className="bg-[#FAF7F2] text-[#1F0E0A] border-t border-[#E8DEC8] w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 lg:py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 items-start">
           {/* Column 1: Bihar Setu Branding, Social Links, Legal & Developer Credits (lg:col-span-5) */}
           <div className="lg:col-span-5 flex flex-col justify-start">
             {/* Header Text */}
             <div className="mb-3">
-              <span className="block text-white font-serif font-bold text-xl sm:text-2xl tracking-wider leading-none">
+              <span className="block text-[#1F0E0A] font-serif font-bold text-xl sm:text-2xl tracking-wider leading-none">
                 {tx(f.titleLine1)}
               </span>
-              <span className="block text-[#D6A33A] font-serif font-bold text-xl sm:text-2xl tracking-wider leading-tight mt-1">
+              <span className="block text-[#96681E] font-serif font-bold text-xl sm:text-2xl tracking-wider leading-tight mt-1">
                 {tx(f.titleLine2)}
               </span>
             </div>
@@ -172,7 +188,7 @@ export default function Footer() {
                       target="_blank"
                       rel="noreferrer"
                       aria-label={SOCIAL_PLATFORMS.find((p) => p.value === social.platform)?.label || 'Social media'}
-                      className="w-9 h-9 rounded-md border border-[#8C4A42] flex items-center justify-center text-white/80 hover:text-white hover:border-[#D6A33A] hover:bg-[#681E15] transition-all duration-200"
+                      className="w-9 h-9 rounded-md border border-[#E8DEC8] bg-white flex items-center justify-center text-[#5C443C] hover:text-[#1F0E0A] hover:border-[#D6A33A] hover:bg-[#FFF9EE] shadow-2xs transition-all duration-200"
                     >
                       <Icon size={16} />
                     </a>
@@ -182,14 +198,14 @@ export default function Footer() {
             )}
 
             {/* Copyright, Policies & Developer Credits */}
-            <div className="space-y-1.5 text-xs text-white/70">
+            <div className="space-y-1.5 text-xs text-[#5C443C]">
               {tx(f.copyright) && <p className="font-normal">{tx(f.copyright)}</p>}
               {legalLinks.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 text-white/60">
+                <div className="flex flex-wrap items-center gap-2 text-[#6B5A52]">
                   {legalLinks.map((link, idx) => (
                     <React.Fragment key={idx}>
-                      {idx > 0 && <span>|</span>}
-                      <CmsLink to={link.link} className="hover:text-white transition-colors">
+                      {idx > 0 && <span className="text-[#C4B3A3]">|</span>}
+                      <CmsLink to={link.link} className="hover:text-[#1F0E0A] transition-colors">
                         {tx(link.label)}
                       </CmsLink>
                     </React.Fragment>
@@ -197,17 +213,17 @@ export default function Footer() {
                 </div>
               )}
               {tx(f.creditName) && (
-                <p className="text-[11px] text-white/60 pt-1">
+                <p className="text-[11px] text-[#6B5A52] pt-1">
                   {tx(f.creditText)}{' '}
                   {trimmed(f.creditLink) ? (
                     <CmsLink
                       to={f.creditLink}
-                      className="text-[#D6A33A] hover:text-[#F7C568] font-medium transition-colors underline underline-offset-2"
+                      className="text-[#8C291D] hover:text-[#651B12] font-semibold transition-colors underline underline-offset-2"
                     >
                       {tx(f.creditName)}
                     </CmsLink>
                   ) : (
-                    <span className="text-[#D6A33A] font-medium">{tx(f.creditName)}</span>
+                    <span className="text-[#8C291D] font-semibold">{tx(f.creditName)}</span>
                   )}
                 </p>
               )}
@@ -217,7 +233,7 @@ export default function Footer() {
           {/* Column 2: Quick Links & Partner Logos (lg:col-span-3) */}
           <div className="lg:col-span-3 flex flex-col justify-start">
             {tx(f.quickLinksHeading) && (
-              <h3 className="text-white font-medium text-base mb-3 sm:mb-4">
+              <h3 className="text-[#1F0E0A] font-medium text-base mb-3 sm:mb-4">
                 {tx(f.quickLinksHeading)}
               </h3>
             )}
@@ -228,7 +244,7 @@ export default function Footer() {
                   <li key={idx}>
                     <CmsLink
                       to={link.link}
-                      className="text-white/70 hover:text-[#D6A33A] text-xs sm:text-sm transition-colors duration-200"
+                      className="text-[#5C443C] hover:text-[#8C291D] text-xs sm:text-sm font-normal transition-colors duration-200"
                     >
                       {tx(link.label)}
                     </CmsLink>
@@ -239,11 +255,11 @@ export default function Footer() {
 
             {/* Partner Logos */}
             {partnerLogos.length > 0 && (
-              <div className="flex items-center gap-5 mt-6 pt-5 border-t border-[#6B241C]">
+              <div className="flex items-center gap-5 mt-6 pt-5 border-t border-[#E8DEC8]">
                 {partnerLogos.map((logo, idx) => (
                   <MaybeLink key={idx} to={logo.link}>
                     <img
-                      src={resolveImage(logo.image)}
+                      src={resolveImage(logo.image) || logo.image}
                       alt={logo.name}
                       className="h-9 sm:h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
                     />
@@ -256,7 +272,7 @@ export default function Footer() {
           {/* Column 3: Organised by & Get in touch (lg:col-span-4) */}
           <div className="lg:col-span-4 flex flex-col justify-start">
             {tx(f.organisedByLabel) && (
-              <span className="text-white/70 text-xs sm:text-sm mb-2">
+              <span className="text-[#6B5A52] text-xs sm:text-sm mb-2 font-medium">
                 {tx(f.organisedByLabel)}
               </span>
             )}
@@ -273,12 +289,12 @@ export default function Footer() {
                 </MaybeLink>
               )}
               {tx(f.organiserTagline) && (
-                <p className="text-white/60 text-[11px] italic">
+                <p className="text-[#5C443C] text-[11px] italic">
                   {tx(f.organiserTagline)}
                 </p>
               )}
               {tx(f.summitEdition) && (
-                <p className="text-white/85 text-xs sm:text-sm font-medium mt-1">
+                <p className="text-[#1F0E0A] text-xs sm:text-sm font-medium mt-1">
                   {tx(f.summitEdition)}
                 </p>
               )}
@@ -288,7 +304,7 @@ export default function Footer() {
             {(tx(f.getInTouchHeading) || contacts.length > 0) && (
               <div className="mt-5">
                 {tx(f.getInTouchHeading) && (
-                  <h4 className="text-white font-medium text-sm sm:text-base mb-2.5">
+                  <h4 className="text-[#1F0E0A] font-medium text-sm sm:text-base mb-2.5">
                     {tx(f.getInTouchHeading)}
                   </h4>
                 )}
@@ -299,8 +315,8 @@ export default function Footer() {
                     const href = contactHref(contact.type, value);
                     if (!href) {
                       return (
-                        <p key={idx} className="flex items-start gap-2 text-[#E5A93C] text-xs sm:text-sm">
-                          <Icon size={14} className="shrink-0 mt-0.5 text-[#E5A93C]" />
+                        <p key={idx} className="flex items-start gap-2 text-[#8C291D] text-xs sm:text-sm font-medium">
+                          <Icon size={14} className="shrink-0 mt-0.5 text-[#D6A33A]" />
                           <span>{value}</span>
                         </p>
                       );
@@ -310,9 +326,9 @@ export default function Footer() {
                         key={idx}
                         href={href}
                         {...(contact.type === 'whatsapp' ? { target: '_blank', rel: 'noreferrer' } : {})}
-                        className="flex items-center gap-2 text-[#E5A93C] hover:text-[#F7C568] text-xs sm:text-sm transition-colors"
+                        className="flex items-center gap-2 text-[#8C291D] hover:text-[#651B12] text-xs sm:text-sm font-medium transition-colors"
                       >
-                        <Icon size={14} className="shrink-0 text-[#E5A93C]" />
+                        <Icon size={14} className="shrink-0 text-[#D6A33A]" />
                         <span>{value}</span>
                       </a>
                     );

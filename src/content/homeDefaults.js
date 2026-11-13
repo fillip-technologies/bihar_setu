@@ -133,7 +133,7 @@ export const HOME_DEFAULTS = {
   footer: {
     titleLine1: L('footer.titleLine1'),
     titleLine2: L('footer.titleLine2'),
-    logo: 'asset:bihar-setu-navbar-logo.png',
+    logo: 'asset:bihar-setu-navbar-logo-dark.png',
     logoLink: '/',
     socialLinks: [
       { platform: 'instagram', link: 'https://instagram.com' },
@@ -160,11 +160,11 @@ export const HOME_DEFAULTS = {
       ['footer.linkFaqs', '#faqs'],
     ].map(([key, link]) => ({ label: L(key), link })),
     partnerLogos: [
-      { image: 'asset:404-experiences-logo-light.png', name: '404 Experiences', link: '' },
+      { image: 'asset:404-experiences-logo-dark.png', name: '404 Experiences', link: '' },
       { image: 'asset:bihar-tourism-logo.png', name: 'Bihar Tourism', link: '' },
     ],
     organisedByLabel: L('footer.organisedBy'),
-    organiserLogo: 'asset:404-experiences-logo-light.png',
+    organiserLogo: 'asset:404-experiences-logo-dark.png',
     organiserName: '404 Experiences',
     organiserLink: '',
     organiserTagline: L('footer.tagline404'),
