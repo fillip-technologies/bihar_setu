@@ -28,6 +28,9 @@ export const getFormDefinition = (key) => request(`/api/forms/${key}`);
 
 export const getPageContent = (page) => request(`/api/content/${page}`);
 
+// Saved content of every page: { pages: { home: { hero: {...} }, about: {...}, ... } }.
+export const getAllPageContent = () => request('/api/content');
+
 export const submitForm = (key, data) =>
   request(`/api/forms/${key}/submissions`, {
     method: 'POST',

@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAboutSection, useLocalized } from '../../content/siteContent';
+import { useLocalized, usePageSection } from '../../content/siteContent';
 
 export default function AboutPlatform() {
-  const c = useAboutSection('platform');
+  const c = usePageSection('about', 'platform');
   const tx = useLocalized();
 
   return (

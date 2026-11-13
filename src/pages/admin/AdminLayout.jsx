@@ -1,11 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, ExternalLink, House, Inbox, Info, ListChecks, LogOut, Menu, X } from 'lucide-react';
+import {
+  CalendarDays, ChevronDown, ExternalLink, Handshake, House, Inbox, Info, ListChecks, LogOut, Menu, MessageSquare, Mic,
+  Ticket, X,
+} from 'lucide-react';
 import logo from '../../assets/bihar-setu-logo-white-cropped.png';
 import { adminRequest, adminToken } from '../../utils/api';
-import { CONTENT_PAGES } from './constants';
+import { CONTENT_PAGES, contentPath } from './constants';
 
-const PAGE_ICONS = { home: House, about: Info };
+const PAGE_ICONS = {
+  home: House, about: Info, agenda: CalendarDays, speakers: Mic, partners: Handshake, getInvolved: Ticket, enquire: MessageSquare,
+};
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -13,7 +18,7 @@ export default function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { pathname } = useLocation();
   // Website pages whose section list is expanded; starts with the page being edited.
-  const [openPages, setOpenPages] = useState(() => CONTENT_PAGES.filter((p) => pathname.startsWith(`/admin/${p.key}/`)).map((p) => p.key));
+  const [openPages, setOpenPages] = useState(() => CONTENT_PAGES.filter((p) => pathname.startsWith(contentPath(p.key, ''))).map((p) => p.key));
   const togglePage = (key) => setOpenPages((open) => (open.includes(key) ? open.filter((k) => k !== key) : [...open, key]));
   const hasToken = Boolean(adminToken.get());
 
@@ -102,7 +107,7 @@ export default function AdminLayout() {
                     {open && (
                       <div className="ml-5 mt-0.5 space-y-0.5 border-l border-white/10 pl-2">
                         {page.sections.map((s) => (
-                          <NavLink key={s.key} to={`/admin/${page.key}/${s.key}`} onClick={() => setMenuOpen(false)} className={sectionLinkClass}>
+                          <NavLink key={s.key} to={contentPath(page.key, s.key)} onClick={() => setMenuOpen(false)} className={sectionLinkClass}>
                             {s.title}
                           </NavLink>
                         ))}
@@ -114,7 +119,7 @@ export default function AdminLayout() {
                             {page.shared.map((s) => (
                               <NavLink
                                 key={`${s.page}/${s.section}`}
-                                to={`/admin/${s.page}/${s.section}`}
+                                to={contentPath(s.page, s.section)}
                                 onClick={() => setMenuOpen(false)}
                                 className={sectionLinkClass}
                               >

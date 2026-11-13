@@ -1,12 +1,8 @@
 // What the admin panel shows for each About page section, in page order (field types are listed in schemaFields.js).
-import { image, list, text, textarea } from './schemaFields';
+import { heroSection, list, text, textarea } from './schemaFields';
 
 export const ABOUT_SECTIONS = [
-  {
-    key: 'hero',
-    title: 'Hero Banner',
-    fields: [image('image', 'Background image'), text('imageAlt', 'Image description'), text('title', 'Title')],
-  },
+  heroSection,
   {
     key: 'platform',
     title: 'About the Platform',

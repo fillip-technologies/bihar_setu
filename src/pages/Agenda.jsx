@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import AgendaHero from '../components/agenda/AgendaHero';
+import PageHero from '../shared/PageHero';
 import AgendaSchedule from '../components/agenda/AgendaSchedule';
 import AgendaRegisterForm from '../components/agenda/AgendaRegisterForm';
 import GetInTouch from '../components/home/GetInTouch';
@@ -25,7 +25,7 @@ export default function Agenda() {
   return (
     <div className="flex flex-col w-full">
       {/* 1. Page Hero Banner with 'FULL AGENDA 2026' */}
-      <AgendaHero />
+      <PageHero page="agenda" />
 
       {/* 2. Interactive Schedule (Day 1 / Day 2, Search, Panels, Evening Programme) */}
       <AgendaSchedule />

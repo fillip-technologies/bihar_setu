@@ -1,11 +1,17 @@
 import React from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import AdminLogin from './AdminLogin';
 import AdminLayout from './AdminLayout';
 import SubmissionsPanel from './SubmissionsPanel';
 import FormBuilder from './FormBuilder';
 import PageSectionEditor from './PageSectionEditor';
-import { CONTENT_PAGES } from './constants';
+import { contentPath } from './constants';
+
+// Page editors used to live at /admin/home/<section> and /admin/about/<section>.
+function OldContentPath({ page }) {
+  const { section } = useParams();
+  return <Navigate to={contentPath(page, section)} replace />;
+}
 
 // Routes under /admin. Each form has a submissions view and a field builder; each website page has a section editor.
 export default function AdminApp() {
@@ -17,9 +23,10 @@ export default function AdminApp() {
           <Route index element={<Navigate to="agenda/submissions" replace />} />
           <Route path=":formKey/submissions" element={<SubmissionsPanel />} />
           <Route path=":formKey/fields" element={<FormBuilder />} />
-          {CONTENT_PAGES.map((p) => (
-            <Route key={p.key} path={`${p.key}/:section`} element={<PageSectionEditor pageKey={p.key} />} />
-          ))}
+          {/* Under their own prefix, so a page key can never clash with a form key (both are "agenda") */}
+          <Route path="pages/:page/:section" element={<PageSectionEditor />} />
+          <Route path="home/:section" element={<OldContentPath page="home" />} />
+          <Route path="about/:section" element={<OldContentPath page="about" />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
       </Routes>
