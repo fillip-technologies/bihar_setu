@@ -23,27 +23,12 @@ export default function PassPricingTable() {
           <table className="w-full text-left border-collapse min-w-[620px]">
             {/* Table Header */}
             <thead>
-<<<<<<< HEAD
               <tr className="bg-[#052E67] text-white">
-                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4">
-                  {t('getInvolvedPage.colFeature')}
-                </th>
-                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#0E448B]">
-                  {t('getInvolvedPage.colConference')}
-                </th>
-                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#0E448B]">
-                  {t('getInvolvedPage.colStudent')}
-                </th>
-                <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center w-1/4 border-l border-[#0E448B]">
-                  {t('getInvolvedPage.colExpo')}
-=======
-              <tr className="bg-[#651B12] text-white">
                 <th className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center" style={colWidth}>
                   {tx(c.featureHeading)}
->>>>>>> 3d8d3a01c34975c2ef615ead578541491b808607
                 </th>
                 {passes.map((pass, idx) => (
-                  <th key={idx} className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center border-l border-[#8C4A42]" style={colWidth}>
+                  <th key={idx} className="py-4 sm:py-5 px-6 font-medium text-xs sm:text-sm text-center border-l border-[#0E448B]" style={colWidth}>
                     {tx(pass.name)}
                   </th>
                 ))}
