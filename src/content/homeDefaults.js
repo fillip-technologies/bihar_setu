@@ -9,7 +9,7 @@ const range = (n, fn) => Array.from({ length: n }, (_, i) => fn(i + 1));
 
 export const HOME_DEFAULTS = {
   header: {
-    logo: 'asset:bihar-setu-navbar-logo.png',
+    logo: 'asset:bihar-setu-navbar-logo-dark.png',
     navHome: L('nav.home'),
     navAbout: L('nav.about'),
     navAgenda: L('nav.agenda'),

@@ -24,7 +24,9 @@ export const colors = {
   },
   surface: {
     dark: '#1A0502',
-    navbar: '#521810',
+    navbar: '#FAF7F2',
+    offWhite: '#FAF7F2',
+    master: '#FAF7F2',
   },
 };
 

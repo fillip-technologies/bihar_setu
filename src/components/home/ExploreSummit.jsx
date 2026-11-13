@@ -23,10 +23,10 @@ export default function ExploreSummit() {
   };
 
   return (
-    <section className="w-full bg-[#651B12] py-14 sm:py-18 lg:py-20 text-white overflow-hidden">
+    <section className="w-full bg-[#FAF7F2] border-y border-[#E8DEC8] py-14 sm:py-18 lg:py-20 overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Section Title */}
-        <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-serif font-normal text-white tracking-wide mb-10 sm:mb-12">
+        <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-serif font-normal text-[#1F0E0A] tracking-wide mb-10 sm:mb-12">
           {tx(c.heading)}
         </h2>
 
@@ -37,7 +37,7 @@ export default function ExploreSummit() {
             type="button"
             onClick={() => handleScroll('left')}
             aria-label="Previous Slide"
-            className="absolute -left-2 sm:-left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white text-stone-900 flex items-center justify-center shadow-2xl hover:bg-stone-100 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="absolute -left-2 sm:-left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white text-[#1F0E0A] border border-[#E8DEC8] flex items-center justify-center shadow-lg hover:bg-stone-50 hover:scale-105 active:scale-95 transition-all cursor-pointer"
           >
             <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
           </button>
@@ -47,7 +47,7 @@ export default function ExploreSummit() {
             type="button"
             onClick={() => handleScroll('right')}
             aria-label="Next Slide"
-            className="absolute -right-2 sm:-right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white text-stone-900 flex items-center justify-center shadow-2xl hover:bg-stone-100 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="absolute -right-2 sm:-right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white text-[#1F0E0A] border border-[#E8DEC8] flex items-center justify-center shadow-lg hover:bg-stone-50 hover:scale-105 active:scale-95 transition-all cursor-pointer"
           >
             <ChevronRight className="w-5 h-5 stroke-[2.5]" />
           </button>

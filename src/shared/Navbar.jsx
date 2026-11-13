@@ -4,8 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { NAV_LINKS } from '../constants/navigation';
 import { useHomeSection, useLocalized } from '../content/siteContent';
-import { resolveImage } from '../content/assets';
 import CmsLink from '../content/CmsLink';
+import navbarLogoDark from '../assets/bihar-setu-navbar-logo-dark.png';
 
 // Content field holding each menu item's label.
 const NAV_LABEL_FIELDS = {
@@ -44,14 +44,14 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#521810] border-b border-[#3B0E07]/80 shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-[#FAF7F2] border-b border-[#E8DEC8] shadow-xs">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-18">
           {/* Left: Brand Logo */}
           <div className="flex items-center shrink-0">
             <Link to="/" className="flex items-center group py-0.5">
               <img
-                src={resolveImage(header.logo)}
+                src={navbarLogoDark}
                 alt="Bihar Setu Logo"
                 className="h-11 sm:h-13 w-auto object-contain transition-transform group-hover:scale-105"
               />
@@ -68,8 +68,8 @@ export default function Navbar() {
                   to={link.href}
                   className={`text-[13px] font-bold tracking-wider transition-colors duration-200 uppercase ${
                     isActive
-                      ? 'text-[#CB9010]'
-                      : 'text-white hover:text-[#CB9010]'
+                      ? 'text-[#651B12] border-b-2 border-[#D6A33A] pb-0.5'
+                      : 'text-[#2D0B02] hover:text-[#B8800B]'
                   }`}
                 >
                   {tx(header[NAV_LABEL_FIELDS[link.key]])}
@@ -81,14 +81,14 @@ export default function Navbar() {
           {/* Right: Language Toggle & CTA Buttons */}
           <div className="hidden md:flex items-center gap-3 xl:gap-4 shrink-0">
             {/* Language Toggle Pill: EN | हिंदी */}
-            <div className="flex items-center rounded-full border border-[#CB9010]/80 bg-[#3B0E07]/60 p-0.5">
+            <div className="flex items-center rounded-full border border-[#D6A33A]/70 bg-[#FFF9EE] p-0.5 shadow-2xs">
               <button
                 type="button"
                 onClick={() => switchLanguage('en')}
                 className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all duration-200 cursor-pointer ${
                   currentLang.startsWith('en')
-                    ? 'bg-[#CB9010] text-[#370C01] shadow-xs'
-                    : 'text-white hover:text-[#CB9010]'
+                    ? 'bg-[#D6A33A] text-[#1E0904] shadow-xs'
+                    : 'text-[#5C443C] hover:text-[#1E0904]'
                 }`}
               >
                 EN
@@ -98,8 +98,8 @@ export default function Navbar() {
                 onClick={() => switchLanguage('hi')}
                 className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all duration-200 cursor-pointer ${
                   currentLang.startsWith('hi')
-                    ? 'bg-[#CB9010] text-[#370C01] shadow-xs'
-                    : 'text-white hover:text-[#CB9010]'
+                    ? 'bg-[#D6A33A] text-[#1E0904] shadow-xs'
+                    : 'text-[#5C443C] hover:text-[#1E0904]'
                 }`}
               >
                 हिंदी
@@ -109,15 +109,15 @@ export default function Navbar() {
             {/* CTA 1: GET YOUR PASS (Filled Gold) */}
             <CmsLink
               to={header.passLink}
-              className="bg-[#CB9010] hover:bg-[#B8800B] text-[#370C01] font-bold text-xs tracking-wider uppercase px-5 py-2.5 rounded-full shadow-xs transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap inline-flex items-center justify-center"
+              className="bg-[#D6A33A] hover:bg-[#C28F27] text-[#1E0904] font-bold text-xs tracking-wider uppercase px-5 py-2.5 rounded-full shadow-xs transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap inline-flex items-center justify-center"
             >
               {tx(header.passLabel)}
             </CmsLink>
 
-            {/* CTA 2: ENQUIRE NOW (Outlined Gold) */}
+            {/* CTA 2: ENQUIRE NOW (Outlined) */}
             <CmsLink
               to={header.enquireLink}
-              className="border border-[#CB9010] hover:bg-[#CB9010]/15 text-[#CB9010] hover:text-[#E0A62E] font-bold text-xs tracking-wider uppercase px-5 py-2.5 rounded-full transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap inline-flex items-center justify-center"
+              className="border border-[#651B12] hover:bg-[#651B12] text-[#651B12] hover:text-white font-bold text-xs tracking-wider uppercase px-5 py-2.5 rounded-full transition-all duration-200 active:scale-95 cursor-pointer whitespace-nowrap inline-flex items-center justify-center"
             >
               {tx(header.enquireLabel)}
             </CmsLink>
@@ -126,14 +126,14 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-2">
             {/* Language Pill Mobile */}
-            <div className="flex items-center rounded-full border border-[#CB9010]/80 bg-[#3B0E07]/60 p-0.5">
+            <div className="flex items-center rounded-full border border-[#D6A33A]/70 bg-[#FFF9EE] p-0.5">
               <button
                 type="button"
                 onClick={() => switchLanguage('en')}
                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-all cursor-pointer ${
                   currentLang.startsWith('en')
-                    ? 'bg-[#CB9010] text-[#370C01]'
-                    : 'text-white'
+                    ? 'bg-[#D6A33A] text-[#1E0904]'
+                    : 'text-[#5C443C]'
                 }`}
               >
                 EN
@@ -143,8 +143,8 @@ export default function Navbar() {
                 onClick={() => switchLanguage('hi')}
                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-all cursor-pointer ${
                   currentLang.startsWith('hi')
-                    ? 'bg-[#CB9010] text-[#370C01]'
-                    : 'text-white'
+                    ? 'bg-[#D6A33A] text-[#1E0904]'
+                    : 'text-[#5C443C]'
                 }`}
               >
                 हिंदी
@@ -154,7 +154,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg text-white hover:text-[#CB9010] focus:outline-hidden"
+              className="p-2 rounded-lg text-[#2D0B02] hover:text-[#D6A33A] focus:outline-hidden cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -165,7 +165,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#3B0E07] border-t border-[#521810] px-4 pt-3 pb-6 space-y-3">
+        <div className="lg:hidden bg-[#FAF7F2] border-t border-[#E8DEC8] px-4 pt-3 pb-6 space-y-3 shadow-md">
           <div className="flex flex-col space-y-2">
             {NAV_LINKS.map((link) => {
               const isActive = getIsActive(link);
@@ -176,8 +176,8 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`px-3 py-2 rounded-lg text-sm font-bold tracking-wider uppercase transition-colors ${
                     isActive
-                      ? 'text-[#CB9010] bg-[#521810]'
-                      : 'text-white hover:bg-[#521810]/60 hover:text-[#CB9010]'
+                      ? 'text-[#651B12] bg-[#EFE5D7]'
+                      : 'text-[#2D0B02] hover:bg-[#EFE5D7]/60 hover:text-[#651B12]'
                   }`}
                 >
                   {tx(header[NAV_LABEL_FIELDS[link.key]])}
@@ -186,18 +186,18 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="pt-3 border-t border-[#521810] flex flex-col sm:flex-row gap-2">
+          <div className="pt-3 border-t border-[#E8DEC8] flex flex-col sm:flex-row gap-2">
             <CmsLink
               to={header.passLink}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full bg-[#CB9010] hover:bg-[#B8800B] text-[#370C01] font-bold text-xs tracking-wider uppercase py-2.5 rounded-full shadow-xs transition-all text-center"
+              className="w-full bg-[#D6A33A] hover:bg-[#C28F27] text-[#1E0904] font-bold text-xs tracking-wider uppercase py-2.5 rounded-full shadow-xs transition-all text-center inline-flex items-center justify-center"
             >
               {tx(header.passLabel)}
             </CmsLink>
             <CmsLink
               to={header.enquireLink}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full border border-[#CB9010] hover:bg-[#CB9010]/15 text-[#CB9010] font-bold text-xs tracking-wider uppercase py-2.5 rounded-full transition-all text-center inline-flex items-center justify-center"
+              className="w-full border border-[#651B12] hover:bg-[#651B12] text-[#651B12] hover:text-white font-bold text-xs tracking-wider uppercase py-2.5 rounded-full transition-all text-center inline-flex items-center justify-center"
             >
               {tx(header.enquireLabel)}
             </CmsLink>
